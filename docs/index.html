@@ -21,6 +21,7 @@
       <a href="#tour">Tour</a>
       <a href="#principles">Principles</a>
       <a href="#history">Tried &amp; retired</a>
+      <a href="#side">On the side</a>
     </nav>
   </div>
 </header>
@@ -43,12 +44,22 @@
       <li><b>2</b> app environments</li>
       <li><b>1</b> real workload</li>
     </ul>
+
+    <aside class="callout" aria-label="The host">
+      <span class="callout-label">One box</span>
+      <p>
+        Everything on this page — CI server and agents, NATS clusters, databases, the whole
+        observability stack, the apps — runs on a single Linux machine. It is already carrying a
+        lot of containers, and it is still fast. No VM layers in between: Linux and Docker.
+      </p>
+      <!-- TODO: add the hardware line (CPU · RAM · disk) and a container count from `docker ps -q | wc -l`. -->
+    </aside>
   </section>
 
   <!-- Pillars -->
   <section id="pillars" class="wrap section">
     <h2>The pillars</h2>
-    <p class="section-lede">Six pillars. The first five are the platform; the sixth is what keeps it honest.</p>
+    <p class="section-lede">Seven pillars. The first six are the platform; the seventh is what keeps it honest.</p>
 
     <div class="pillars">
 
@@ -70,8 +81,17 @@
         <p class="note">Each service publishes its typed API client as a NuGet package; consumers pin versions, so a contract change is a reviewed commit.</p>
       </article>
 
+      <article class="pillar pillar-highlight" style="--hue: var(--c-deploy)">
+        <div class="pillar-head"><span class="num">03</span><h3>Deploy: GitOps lite</h3></div>
+        <p>Git records exactly what runs in each environment, so a deploy can be seen, repeated and rolled back.</p>
+        <ul class="chips">
+          <li>Deploy repo</li><li>Pinned image tags</li><li>Docker Compose</li><li>Bash scripts</li><li>TeamCity-driven</li>
+        </ul>
+        <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated before a zero-downtime rolling replace; prod gets the same image tag as test, never a rebuild. Self-healing reconcile from Git is built and waiting to be switched on.</p>
+      </article>
+
       <article class="pillar" style="--hue: var(--c-run)">
-        <div class="pillar-head"><span class="num">03</span><h3>Run</h3></div>
+        <div class="pillar-head"><span class="num">04</span><h3>Run</h3></div>
         <p>The application platform: storage, messaging, isolation.</p>
         <ul class="chips">
           <li>Docker</li><li>PostgreSQL</li><li>NATS JetStream</li><li>3-node clusters</li><li>test / prod</li>
@@ -80,16 +100,16 @@
       </article>
 
       <article class="pillar" style="--hue: var(--c-secure)">
-        <div class="pillar-head"><span class="num">04</span><h3>Secure access</h3></div>
+        <div class="pillar-head"><span class="num">05</span><h3>Secure access</h3></div>
         <p>One front door, one identity provider.</p>
         <ul class="chips">
-          <li>ngrok</li><li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li>
+          <li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li><li class="chip-temp">ngrok · temporary, dev only</li>
         </ul>
-        <p class="note">Every tunnel lands on Traefik; nothing is tunnelled straight to a service port. Databases and brokers are never exposed.</p>
+        <p class="note">Traefik is the front door and Keycloak the single sign-on behind it. ngrok is only a temporary, development-time tunnel to reach the box — it lands on Traefik, never on a service port, and it is meant to go. Databases and brokers are never exposed.</p>
       </article>
 
       <article class="pillar" style="--hue: var(--c-observe)">
-        <div class="pillar-head"><span class="num">05</span><h3>Observe</h3></div>
+        <div class="pillar-head"><span class="num">06</span><h3>Observe</h3></div>
         <p>Logs, traces, metrics and uptime — OpenTelemetry wherever it is available.</p>
         <ul class="chips">
           <li>Prometheus</li><li>Grafana</li><li>Jaeger + Elasticsearch</li><li>Seq</li><li>Uptime Kuma</li><li>cAdvisor</li><li>NATS Surveyor</li>
@@ -98,7 +118,7 @@
       </article>
 
       <article class="pillar pillar-proof" style="--hue: var(--c-proof)">
-        <div class="pillar-head"><span class="num">06</span><h3>Prove it: TM</h3></div>
+        <div class="pillar-head"><span class="num">07</span><h3>Prove it: TM</h3></div>
         <p>A transit-management product built on the platform — not a hello-world.</p>
         <ul class="chips">
           <li>.NET 10</li><li>Fleet service</li><li>Transport ops service</li><li>Backoffice BFF</li><li>React backoffice</li>
@@ -116,7 +136,7 @@
 
     <ol class="flow" aria-label="Request path">
       <li><span class="step">Internet</span></li>
-      <li><span class="step">ngrok</span><small>TLS, unified URLs</small></li>
+      <li><span class="step step-temp">ngrok</span><small>temporary · dev only</small></li>
       <li><span class="step">Traefik</span><small>routes by host</small></li>
       <li><span class="step">oauth2-proxy → Keycloak</span><small>single sign-on</small></li>
       <li><span class="step accent">TM frontend + BFF</span><small>composes views</small></li>
@@ -135,10 +155,10 @@
         <ol class="mini">
           <li>Push to GitHub</li>
           <li>TeamCity builds and tests</li>
-          <li>API client packed → Gitea feed</li>
-          <li>Image pushed → Docker Registry</li>
-          <li>Secrets pulled from Infisical</li>
-          <li>Deployed to the test network</li>
+          <li>API client packed → Gitea feed; image → Docker Registry</li>
+          <li>Deploy: migrations first, gated — a failure keeps the last good version</li>
+          <li>Rolling replace, secrets injected from Infisical at runtime</li>
+          <li>The new version is pinned in the deploy repo — Git now says what is live</li>
         </ol>
       </div>
       <div class="lane">
@@ -162,8 +182,7 @@
       Placeholders below mark what each stop will show.
     </p>
 
-    <!-- Each slot shows img/tour/NN-*.png once it exists and falls back to the placeholder text.
-         What to capture for each one: SHOTLIST.md at the repository root. -->
+    <!-- Each slot shows img/tour/NN-*.png once it exists and falls back to the placeholder text. -->
     <div class="tour">
       <figure class="stop">
         <div class="shot"><img src="img/tour/01-front-door.png" alt="Keycloak sign-in and Traefik routers" loading="lazy" onerror="this.remove()">Keycloak sign-in · Traefik routers</div>
@@ -235,6 +254,22 @@
     <h3 class="sub">Being evaluated</h3>
     <ul class="chips evaluating">
       <li>Garage (S3 storage)</li><li>Verdaccio (npm registry)</li><li>OpenObserve</li>
+    </ul>
+  </section>
+
+  <!-- On the side -->
+  <section id="side" class="wrap section side">
+    <h2>On the side: home apps</h2>
+    <p class="section-lede">
+      The same box runs a few self-hosted apps that make everyday life easier. They live on their
+      own network, and most sit behind the same single sign-on.
+    </p>
+    <ul class="side-apps">
+      <li><b>Immich</b><span>photo library</span></li>
+      <li><b>Dawarich</b><span>location history</span></li>
+      <li><b>n8n</b><span>workflow automation</span></li>
+      <li><b>Trilium</b><span>notes</span></li>
+      <li><b>Homepage</b><span>dashboard of it all</span></li>
     </ul>
   </section>
 
