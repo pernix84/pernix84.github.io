@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The MRZ Project</title>
+  <meta name="description" content="A self-hosted, cloud-native platform covering the whole delivery chain — plan, build, run, secure, observe — proven by a real application running on it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#top">MRZ<span>project</span></a>
+    <nav aria-label="Sections">
+      <a href="#pillars">Pillars</a>
+      <a href="#flow">Request flow</a>
+      <a href="#tour">Tour</a>
+      <a href="#principles">Principles</a>
+      <a href="#history">Tried &amp; retired</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero wrap">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Sketch · under construction</p>
+    <h1>Everything around the application.</h1>
+    <p class="lede">
+      MRZ is a self-hosted, cloud-native platform that covers the whole delivery chain —
+      planning, building, running, securing and observing software. The goal is not an app,
+      it is the machinery every app needs. <strong>TM</strong>, a transit-management product,
+      runs on it as the proof.
+    </p>
+    <ul class="facts" aria-label="At a glance">
+      <li><b>1</b> Linux host</li>
+      <li><b>5</b> tiers</li>
+      <li><b>2</b> app environments</li>
+      <li><b>1</b> real workload</li>
+    </ul>
+  </section>
+
+  <!-- Pillars -->
+  <section id="pillars" class="wrap section">
+    <h2>The pillars</h2>
+    <p class="section-lede">Six pillars. The first five are the platform; the sixth is what keeps it honest.</p>
+
+    <div class="pillars">
+
+      <article class="pillar" style="--hue: var(--c-plan)">
+        <div class="pillar-head"><span class="num">01</span><h3>Plan &amp; code</h3></div>
+        <p>Where work is decided and written down before it is built.</p>
+        <ul class="chips">
+          <li>GitHub</li><li>YouTrack</li><li>ADRs in Git</li>
+        </ul>
+        <p class="note">Architecture decisions, feature notes and standards live as Markdown next to the code.</p>
+      </article>
+
+      <article class="pillar" style="--hue: var(--c-build)">
+        <div class="pillar-head"><span class="num">02</span><h3>Build &amp; release</h3></div>
+        <p>From commit to versioned artifact, with secrets kept out of the repo.</p>
+        <ul class="chips">
+          <li>TeamCity</li><li>3 agents · 1 CUDA</li><li>Docker Registry</li><li>Gitea NuGet feed</li><li>Infisical</li>
+        </ul>
+        <p class="note">Each service publishes its typed API client as a NuGet package; consumers pin versions, so a contract change is a reviewed commit.</p>
+      </article>
+
+      <article class="pillar" style="--hue: var(--c-run)">
+        <div class="pillar-head"><span class="num">03</span><h3>Run</h3></div>
+        <p>The application platform: storage, messaging, isolation.</p>
+        <ul class="chips">
+          <li>Docker</li><li>PostgreSQL</li><li>NATS JetStream</li><li>3-node clusters</li><li>test / prod</li>
+        </ul>
+        <p class="note">Every tier and environment has its own Docker network; test and prod each get their own NATS cluster and database.</p>
+      </article>
+
+      <article class="pillar" style="--hue: var(--c-secure)">
+        <div class="pillar-head"><span class="num">04</span><h3>Secure access</h3></div>
+        <p>One front door, one identity provider.</p>
+        <ul class="chips">
+          <li>ngrok</li><li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li>
+        </ul>
+        <p class="note">Every tunnel lands on Traefik; nothing is tunnelled straight to a service port. Databases and brokers are never exposed.</p>
+      </article>
+
+      <article class="pillar" style="--hue: var(--c-observe)">
+        <div class="pillar-head"><span class="num">05</span><h3>Observe</h3></div>
+        <p>Logs, traces, metrics and uptime — OpenTelemetry wherever it is available.</p>
+        <ul class="chips">
+          <li>Prometheus</li><li>Grafana</li><li>Jaeger + Elasticsearch</li><li>Seq</li><li>Uptime Kuma</li><li>cAdvisor</li><li>NATS Surveyor</li>
+        </ul>
+        <p class="note">Observability joins every network to scrape, so no metrics port is opened on the host.</p>
+      </article>
+
+      <article class="pillar pillar-proof" style="--hue: var(--c-proof)">
+        <div class="pillar-head"><span class="num">06</span><h3>Prove it: TM</h3></div>
+        <p>A transit-management product built on the platform — not a hello-world.</p>
+        <ul class="chips">
+          <li>.NET 10</li><li>Fleet service</li><li>Transport ops service</li><li>Backoffice BFF</li><li>React backoffice</li>
+        </ul>
+        <p class="note">Two domain services, each owning its database, talking over NATS; a BFF composes them for the UI and publishes the OpenAPI contract the frontend generates its client from.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Request flow -->
+  <section id="flow" class="wrap section">
+    <h2>How a request travels</h2>
+    <p class="section-lede">A user opening the TM backoffice, end to end.</p>
+
+    <ol class="flow" aria-label="Request path">
+      <li><span class="step">Internet</span></li>
+      <li><span class="step">ngrok</span><small>TLS, unified URLs</small></li>
+      <li><span class="step">Traefik</span><small>routes by host</small></li>
+      <li><span class="step">oauth2-proxy → Keycloak</span><small>single sign-on</small></li>
+      <li><span class="step accent">TM frontend + BFF</span><small>composes views</small></li>
+      <li><span class="step accent">Fleet · Transport ops</span><small>own data, own rules</small></li>
+      <li><span class="step">PostgreSQL · NATS</span><small>never exposed</small></li>
+    </ol>
+
+    <div class="sidecar">
+      <span class="sidecar-label">Watching every hop</span>
+      <span>traces → Jaeger</span><span>logs → Seq</span><span>metrics → Prometheus → Grafana</span><span>health → Uptime Kuma</span>
+    </div>
+
+    <div class="flow two">
+      <div class="lane">
+        <h3>Commit to running container</h3>
+        <ol class="mini">
+          <li>Push to GitHub</li>
+          <li>TeamCity builds and tests</li>
+          <li>API client packed → Gitea feed</li>
+          <li>Image pushed → Docker Registry</li>
+          <li>Secrets pulled from Infisical</li>
+          <li>Deployed to the test network</li>
+        </ol>
+      </div>
+      <div class="lane">
+        <h3>An event through the system</h3>
+        <ol class="mini">
+          <li>A vehicle is registered in Fleet</li>
+          <li>Fleet stores it and publishes an event to NATS JetStream</li>
+          <li>Transport ops reads it through a durable consumer</li>
+          <li>Each service keeps its own PostgreSQL — neither reads the other's</li>
+          <li>Visible as one trace across both services</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tour -->
+  <section id="tour" class="wrap section">
+    <h2>Guided tour</h2>
+    <p class="section-lede">
+      The tools sit behind single sign-on, so the tour is told in screenshots of the real thing.
+      Placeholders below mark what each stop will show.
+    </p>
+
+    <!-- Each slot shows img/tour/NN-*.png once it exists and falls back to the placeholder text.
+         What to capture for each one: SHOTLIST.md at the repository root. -->
+    <div class="tour">
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/01-front-door.png" alt="Keycloak sign-in and Traefik routers" loading="lazy" onerror="this.remove()">Keycloak sign-in · Traefik routers</div>
+        <figcaption><b>1 · The front door.</b> One login guards every tool; Traefik shows every route and the auth middleware on it.</figcaption>
+      </figure>
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/02-commit-to-artifact.png" alt="TeamCity build chain and package feed" loading="lazy" onerror="this.remove()">TeamCity build chain · package feed</div>
+        <figcaption><b>2 · Commit to artifact.</b> A TM service build: tests, image, and the published API client its consumers pin.</figcaption>
+      </figure>
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/03-runtime.png" alt="NATS NUI showing a stream and its consumers" loading="lazy" onerror="this.remove()">NATS NUI · stream &amp; consumers</div>
+        <figcaption><b>3 · Runtime.</b> The JetStream streams TM publishes to, and the durable consumers reading them.</figcaption>
+      </figure>
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/04-one-request.png" alt="A Jaeger trace and the matching Seq log stream" loading="lazy" onerror="this.remove()">Jaeger trace · Seq log stream</div>
+        <figcaption><b>4 · One request, followed.</b> A backoffice call traced through the BFF into both domain services.</figcaption>
+      </figure>
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/05-health.png" alt="Grafana dashboards and Uptime Kuma" loading="lazy" onerror="this.remove()">Grafana dashboards · Uptime Kuma</div>
+        <figcaption><b>5 · Health at a glance.</b> Host, container, database and broker metrics, plus uptime of every endpoint.</figcaption>
+      </figure>
+      <figure class="stop">
+        <div class="shot"><img src="img/tour/06-product.png" alt="The TM backoffice routes screen" loading="lazy" onerror="this.remove()">TM backoffice · routes screen</div>
+        <figcaption><b>6 · The product.</b> What all of the above is for: the backoffice serving real transit data.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section id="principles" class="wrap section">
+    <h2>How components get in</h2>
+    <div class="cols">
+      <div>
+        <h3>Criteria</h3>
+        <ul class="ticks">
+          <li>Self-hosted in containers — Docker today, Kubernetes-compatible tomorrow</li>
+          <li>Open source or free for small teams</li>
+          <li>Easy to set up and well documented</li>
+          <li>Integrates with the rest of the chain</li>
+          <li>Standard protocols — OpenTelemetry, OIDC</li>
+          <li>Can cluster when it needs to scale</li>
+          <li>Application-facing tools must have a solid .NET library</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Selection process</h3>
+        <ol class="steps">
+          <li>Name the problem it solves</li>
+          <li>Search the CNCF and CD Foundation landscapes</li>
+          <li>Follow the project's own deployment guide</li>
+          <li>Check it against the criteria</li>
+          <li>Compare alternatives</li>
+          <li>Script a self-hosted setup</li>
+          <li>Experiment — then keep it or retire it</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- History -->
+  <section id="history" class="wrap section">
+    <h2>Tried &amp; retired</h2>
+    <p class="section-lede">The selection process is real — these were run, judged, and dropped.</p>
+    <ul class="chips retired">
+      <li>Harness</li><li>HashiCorp Vault</li><li>Fluentd</li><li>SigNoz</li><li>Uptrace</li>
+      <li>OpenSearch (Jaeger backend)</li><li>Jaeger Spark jobs</li><li>Kestra</li><li>Loggifly</li>
+      <li>ntfy</li><li>Heimdall</li><li>Defacto NATS UI</li>
+    </ul>
+    <h3 class="sub">Being evaluated</h3>
+    <ul class="chips evaluating">
+      <li>Garage (S3 storage)</li><li>Verdaccio (npm registry)</li><li>OpenObserve</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Started around 2018 as a TeamCity experiment with three agents; rebuilt to cover the whole delivery chain.</p>
+    <p class="muted">Built by Zoltan Kadar · <a href="https://github.com/pernix84/pernix84.github.io">Source on GitHub</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
