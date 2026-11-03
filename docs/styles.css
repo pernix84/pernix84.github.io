@@ -214,3 +214,20 @@ h3 { font-size: 1.1rem; margin: 0; }
   .flow > li:not(:last-child)::after { content: "↓"; right: auto; left: 18px; top: auto; bottom: -14px; transform: none; }
   .flow > li { padding-bottom: 14px; }
 }
+
+/* TM subpage: the system diagram */
+.diagram { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.diagram svg { display: block; width: 100%; height: auto; max-width: 760px; margin: 0 auto; }
+.diagram figcaption { font-size: 0.88rem; color: var(--muted); padding-top: 8px; text-align: center; }
+.d-box { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
+.d-entry { stroke: var(--c-plan); }
+.d-domain { stroke: var(--c-proof); }
+.d-data { stroke: var(--c-run); }
+.d-bus { stroke: var(--c-deploy); stroke-dasharray: 5 4; }
+.d-label { fill: var(--text); font: 500 15px var(--font); text-anchor: middle; }
+.d-small { fill: var(--muted); font: 400 12px var(--mono); text-anchor: middle; }
+.d-tier { fill: var(--muted); font: 500 11px var(--mono); letter-spacing: 0.08em; }
+.d-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.d-dash { stroke-dasharray: 5 4; }
+.d-arrow { fill: var(--muted); }
+@media (max-width: 640px) { .d-tier { display: none; } }

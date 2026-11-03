@@ -22,6 +22,7 @@
       <a href="#principles">Principles</a>
       <a href="#history">Tried &amp; retired</a>
       <a href="#side">On the side</a>
+      <a href="tm.html">How TM is built</a>
     </nav>
   </div>
 </header>
@@ -30,7 +31,7 @@
 
   <!-- Hero -->
   <section class="hero wrap">
-    <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Sketch · under construction</p>
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Self-hosted · cloud native, at home</p>
     <h1>Everything around the application.</h1>
     <p class="lede">
       MRZ is a self-hosted, cloud-native platform that covers the whole delivery chain —
@@ -76,9 +77,9 @@
         <div class="pillar-head"><span class="num">02</span><h3>Build &amp; release</h3></div>
         <p>From commit to versioned artifact, with secrets kept out of the repo.</p>
         <ul class="chips">
-          <li>TeamCity</li><li>3 agents · 1 CUDA</li><li>Docker Registry</li><li>Gitea NuGet feed</li><li>Infisical</li>
+          <li>TeamCity</li><li>3 agents · 1 CUDA</li><li>Docker Registry</li><li>Gitea NuGet + npm feeds</li><li>Infisical</li>
         </ul>
-        <p class="note">Each service publishes its typed API client as a NuGet package; consumers pin versions, so a contract change is a reviewed commit.</p>
+        <p class="note">Each service publishes its typed API client as a NuGet package, and the BFF its TypeScript client as an npm package; consumers pin versions, so a contract change is a reviewed commit.</p>
       </article>
 
       <article class="pillar pillar-highlight" style="--hue: var(--c-deploy)">
@@ -87,7 +88,7 @@
         <ul class="chips">
           <li>Deploy repo</li><li>Pinned image tags</li><li>Docker Compose</li><li>Bash scripts</li><li>TeamCity-driven</li>
         </ul>
-        <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated before a zero-downtime rolling replace; prod gets the same image tag as test, never a rebuild. Self-healing reconcile from Git is built and waiting to be switched on.</p>
+        <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated first; then only the services whose image changed are replaced in place, the rest are left untouched. Prod gets the same image tag as test, never a rebuild. Self-healing reconcile from Git is built and waiting to be switched on.</p>
       </article>
 
       <article class="pillar" style="--hue: var(--c-run)">
@@ -105,7 +106,7 @@
         <ul class="chips">
           <li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li><li class="chip-temp">ngrok · temporary, dev only</li>
         </ul>
-        <p class="note">Traefik is the front door and Keycloak the single sign-on behind it. ngrok is only a temporary, development-time tunnel to reach the box — it lands on Traefik, never on a service port, and it is meant to go. Databases and brokers are never exposed.</p>
+        <p class="note">Traefik is the front door and Keycloak the single sign-on behind it: the tools sign in through oauth2-proxy, while the TM app signs in with Keycloak directly (OIDC with PKCE) and its BFF validates every token. ngrok is only a temporary, development-time tunnel to reach the box — it lands on Traefik, never on a service port, and it is meant to go. Databases and brokers are never exposed.</p>
       </article>
 
       <article class="pillar" style="--hue: var(--c-observe)">
@@ -123,7 +124,7 @@
         <ul class="chips">
           <li>.NET 10</li><li>Fleet service</li><li>Transport ops service</li><li>Backoffice BFF</li><li>React backoffice</li>
         </ul>
-        <p class="note">Two domain services, each owning its database, talking over NATS; a BFF composes them for the UI and publishes the OpenAPI contract the frontend generates its client from.</p>
+        <p class="note">Two domain services, each owning its database, talking over NATS; a BFF composes them for the UI and publishes the OpenAPI contract the frontend generates its client from. <a href="tm.html">How TM is built →</a></p>
       </article>
 
     </div>
@@ -138,8 +139,8 @@
       <li><span class="step">Internet</span></li>
       <li><span class="step step-temp">ngrok</span><small>temporary · dev only</small></li>
       <li><span class="step">Traefik</span><small>routes by host</small></li>
-      <li><span class="step">oauth2-proxy → Keycloak</span><small>single sign-on</small></li>
-      <li><span class="step accent">TM frontend + BFF</span><small>composes views</small></li>
+      <li><span class="step">Keycloak</span><small>sign-in · OIDC + PKCE</small></li>
+      <li><span class="step accent">TM frontend + BFF</span><small>checks the token · composes views</small></li>
       <li><span class="step accent">Fleet · Transport ops</span><small>own data, own rules</small></li>
       <li><span class="step">PostgreSQL · NATS</span><small>never exposed</small></li>
     </ol>
@@ -157,7 +158,7 @@
           <li>TeamCity builds and tests</li>
           <li>API client packed → Gitea feed; image → Docker Registry</li>
           <li>Deploy: migrations first, gated — a failure keeps the last good version</li>
-          <li>Rolling replace, secrets injected from Infisical at runtime</li>
+          <li>Changed services replaced in place, secrets injected from Infisical at runtime</li>
           <li>The new version is pinned in the deploy repo — Git now says what is live</li>
         </ol>
       </div>
@@ -249,11 +250,11 @@
     <ul class="chips retired">
       <li>Harness</li><li>HashiCorp Vault</li><li>Fluentd</li><li>SigNoz</li><li>Uptrace</li>
       <li>OpenSearch (Jaeger backend)</li><li>Jaeger Spark jobs</li><li>Kestra</li><li>Loggifly</li>
-      <li>ntfy</li><li>Heimdall</li><li>Defacto NATS UI</li>
+      <li>ntfy</li><li>Heimdall</li><li>Defacto NATS UI</li><li>Portainer</li><li>Verdaccio (npm registry, Gitea won)</li>
     </ul>
     <h3 class="sub">Being evaluated</h3>
     <ul class="chips evaluating">
-      <li>Garage (S3 storage)</li><li>Verdaccio (npm registry)</li><li>OpenObserve</li>
+      <li>Garage (S3 storage)</li><li>OpenObserve</li>
     </ul>
   </section>
 
