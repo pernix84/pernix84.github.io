@@ -30,6 +30,16 @@
   /* A live value, always mono */
   --live: #f5b841;
 
+  /* The pillars' colour coding: MRZ's own, not TM's. Each colour marks its pillar's things:
+     the card's top edge and number, and the flow steps, lanes and strips that belong to it. */
+  --c-plan: #8b93f8;
+  --c-build: #f2b84b;
+  --c-deploy: #c38cfa;
+  --c-run: #4cb8f0;
+  --c-secure: #f47c7c;
+  --c-observe: #5fd38d;
+  --c-proof: var(--accent);
+
   /* Three radii, each with one job */
   --radius-pill: 999px;
   --radius-sign: 2px;
@@ -124,22 +134,22 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
 /* Pillars and pattern cards */
 .pillars { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 12px; }
 .pillar {
-  background: var(--surface-raised);
+  --hue: var(--line-outline);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--hue) 9%, var(--surface-raised)) 0, var(--surface-raised) 110px);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-panel);
+  box-shadow: inset 0 3px 0 var(--hue);
   padding: 20px;
   display: flex; flex-direction: column; gap: 12px;
 }
 .pillar p { margin: 0; color: var(--text-secondary); }
 .pillar-head { display: flex; align-items: baseline; gap: 12px; }
-.num { font-family: var(--mono); font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+.num { font-family: var(--mono); font-size: 0.8rem; color: var(--hue); font-weight: 500; }
+.pillar .chips li { border-color: color-mix(in srgb, var(--hue) 35%, transparent); }
 .note { font-size: 0.875rem; color: var(--text-muted) !important; margin-top: auto !important; }
-/* The proof carries the accent: a 2px inset edge on top, nothing more */
-.pillar-proof { box-shadow: inset 0 2px 0 var(--accent); }
 /* Full width once the grid has two columns or more: the proof closes the grid, not a lone card */
 @media (min-width: 720px) { .pillars > .pillar-proof { grid-column: 1 / -1; } }
-.pillar-proof .num { color: var(--accent); }
-.pillar-highlight { border-color: var(--line-outline); }
+.pillar-highlight { border-color: color-mix(in srgb, var(--hue) 45%, var(--line-strong)); }
 
 /* Hero callout */
 .callout {
@@ -167,36 +177,47 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
   border-radius: var(--radius-pill); padding: 2px 10px;
 }
 .chips-label { margin-bottom: -4px; }
-.retired li { background: transparent; border-color: var(--line-strong); color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--line-outline); }
+.retired li {
+  background: transparent; border-color: var(--line-strong); color: var(--text-muted);
+  text-decoration: line-through; text-decoration-color: var(--text-secondary); text-decoration-thickness: 1.5px;
+}
 /* Dashed means unknown: still being evaluated, or temporary */
 .evaluating li, .pillar .chips li.chip-temp { background: transparent; border: 1px dashed var(--line-outline); color: var(--text-muted); }
 
 /* Request flow: steps read as signage */
 .flow { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
-.flow > li { position: relative; display: flex; flex-direction: column; justify-content: center; margin-right: 14px; }
-.flow > li:not(:last-child)::after { content: "→"; position: absolute; right: -8px; top: 50%; transform: translate(50%, -50%); color: var(--text-muted); font-size: 0.9rem; }
+/* Steps top-aligned; the arrow hangs off the step box, not the column, so it sits at the box's middle */
+.flow > li { position: relative; display: flex; flex-direction: column; justify-content: flex-start; margin-right: 14px; }
+.flow > li:not(:last-child) > .step { position: relative; }
+.flow > li:not(:last-child) > .step::after { content: "→"; position: absolute; right: -12px; top: 50%; transform: translate(50%, -50%); color: var(--text-muted); font-size: 0.9rem; font-weight: 400; }
 .step {
   background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-sign);
   padding: 9px 14px; font-weight: 500; font-size: 0.925rem;
 }
+.step[style*="--hue"] { box-shadow: inset 0 3px 0 var(--hue); }
 .step.accent { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface-raised)); }
 .step-temp { border-style: dashed; border-color: var(--line-outline); color: var(--text-muted); }
-.flow small { color: var(--text-muted); font-size: 0.72rem; padding: 4px 2px 0; font-family: var(--mono); }
+/* The caption wraps under its step instead of widening it */
+.flow small { color: var(--text-muted); font-size: 0.72rem; padding: 4px 2px 0; font-family: var(--mono); width: 0; min-width: 100%; }
 
 .sidecar {
   margin: 20px 0 32px; padding: 12px 16px;
-  border: 1px dashed var(--line-outline);
+  border: 1px dashed color-mix(in srgb, var(--c-observe) 50%, var(--line-strong));
   border-radius: var(--radius-panel); display: flex; flex-wrap: wrap; gap: 8px 18px;
   font-family: var(--mono); font-size: 0.8rem; color: var(--text-secondary);
 }
-.sidecar-label { color: var(--live); }
+.sidecar-label { color: var(--c-observe); }
 
 .flow.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
-.lane { background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-panel); padding: 20px; }
+.lane {
+  --hue: var(--line-outline);
+  background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-panel);
+  box-shadow: inset 3px 0 0 var(--hue); padding: 20px;
+}
 .lane h3 { margin-bottom: 12px; }
 .mini { margin: 0; padding-left: 22px; color: var(--text-secondary); }
 .mini li { padding: 2px 0; }
-.mini li::marker { color: var(--text-muted); font-family: var(--mono); font-size: 0.85em; }
+.mini li::marker { color: var(--hue, var(--text-muted)); font-family: var(--mono); font-size: 0.85em; }
 
 /* Deploy history: a terminal block */
 .terminal { margin: 24px 0 0; background: var(--surface-sunken); border: 1px solid var(--line-strong); border-radius: var(--radius-panel); overflow: hidden; }
@@ -208,20 +229,59 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
 .terminal figcaption { font-size: 0.875rem; color: var(--text-muted); padding: 10px 18px 14px; background: var(--surface-raised); border-top: 1px solid var(--line); }
 
 /* Tour */
-.tour { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 20px; }
-.stop { margin: 0; }
+/* Pictures: a framed thumbnail inside a card in its pillar's colour, three to a row at most, so the
+   page's identity frames the picture. A click opens it full size (lightbox.js). */
+.tour { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 12px; }
+.stop {
+  --hue: var(--line-outline);
+  margin: 0; padding: 12px 12px 14px;
+  background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-panel);
+  box-shadow: inset 0 3px 0 var(--hue);
+  display: flex; flex-direction: column;
+}
 /* Until a stop has its picture, it removes itself (onerror in index.html); with none left, hide the section and its nav link. */
 #tour:not(:has(.stop)) { display: none; }
 body:not(:has(#tour .stop)) nav a[href="#tour"] { display: none; }
 .shot {
+  display: block; width: 100%; padding: 0; margin: 4px 0 0; font: inherit; color: inherit;
   aspect-ratio: 16 / 10;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-panel);
+  border: 1px solid var(--line); border-radius: var(--radius-sign);
   background: var(--surface-sunken);
-  position: relative; overflow: hidden;
+  position: relative; overflow: hidden; cursor: zoom-in;
 }
-.shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
-.stop figcaption { font-size: 0.9rem; color: var(--text-muted); padding-top: 10px; }
+/* Screenshots sit slightly toned down, so a light one does not glare on graphite; full on hover */
+.shot img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left;
+  filter: brightness(0.9) saturate(0.92);
+  transition: filter 200ms var(--ease), transform 300ms var(--ease);
+}
+.shot:hover img, .shot:focus-visible img { filter: none; transform: scale(1.015); }
+.stop figcaption { font-size: 0.875rem; color: var(--text-muted); padding-top: 12px; }
 .stop figcaption b { color: var(--text-primary); font-weight: 600; }
+.stop-label {
+  display: block; margin-bottom: 4px;
+  font-family: var(--mono); font-weight: 500; font-size: 0.68rem;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--hue);
+}
+
+/* The full-size view */
+.lightbox {
+  width: min(1400px, 94vw); max-height: 94vh; padding: 0; overflow: auto;
+  background: var(--surface-raised); color: var(--text-secondary);
+  border: 1px solid var(--line-outline); border-radius: var(--radius-panel);
+}
+.lightbox::backdrop { background: color-mix(in srgb, var(--surface-sunken) 88%, transparent); backdrop-filter: blur(4px); }
+.lightbox figure { margin: 0; }
+.lightbox img { display: block; width: 100%; height: auto; }
+.lightbox figcaption { padding: 12px 18px 16px; font-size: 0.9rem; border-top: 1px solid var(--line); }
+.lightbox figcaption b { color: var(--text-primary); }
+.lightbox .stop-label { color: var(--text-muted); }
+.lightbox-close {
+  position: absolute; top: 10px; right: 10px; width: 34px; height: 34px;
+  border-radius: var(--radius-pill); border: 1px solid var(--line-outline);
+  background: color-mix(in srgb, var(--surface-sunken) 80%, transparent); color: var(--text-primary);
+  font-size: 1.2rem; line-height: 1; cursor: pointer;
+}
 
 /* Principles */
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 32px; }
@@ -235,12 +295,16 @@ body:not(:has(#tour .stop)) nav a[href="#tour"] { display: none; }
 .site-footer { border-top: 1px solid var(--line); background: var(--surface-sunken); padding: 32px 0 48px; font-size: 0.9rem; color: var(--text-secondary); }
 .site-footer p { margin: 0 0 6px; }
 .muted { color: var(--text-muted); }
+code { font-family: var(--mono); font-size: 0.9em; color: var(--text-primary); }
 
 @media (max-width: 640px) {
   .hero { padding-top: 56px; }
   nav { display: none; }
-  .flow > li { margin-right: 0; width: 100%; padding-bottom: 14px; }
-  .flow > li:not(:last-child)::after { content: "↓"; right: auto; left: 18px; top: auto; bottom: -14px; transform: none; }
+  .flow { gap: 0; }
+  .flow > li { margin-right: 0; width: 100%; padding-bottom: 28px; }
+  .flow > li:last-child { padding-bottom: 0; }
+  .flow > li:not(:last-child) > .step::after { content: none; }
+  .flow > li:not(:last-child)::after { content: "↓"; position: absolute; left: 16px; bottom: 4px; color: var(--text-muted); font-size: 0.9rem; line-height: 1; }
 }
 
 /* TM subpage: the system diagram */
@@ -248,10 +312,10 @@ body:not(:has(#tour .stop)) nav a[href="#tour"] { display: none; }
 .diagram svg { display: block; width: 100%; height: auto; max-width: 760px; margin: 0 auto; }
 .diagram figcaption { font-size: 0.875rem; color: var(--text-muted); padding-top: 8px; text-align: center; }
 .d-box { fill: var(--surface-raised); stroke: var(--line-outline); stroke-width: 1.5; }
-.d-entry { stroke: var(--text-muted); }
+.d-entry { stroke: var(--c-plan); }
 .d-domain { stroke: var(--accent); }
-.d-data { stroke: var(--line-outline); }
-.d-bus { stroke: var(--text-muted); stroke-dasharray: 5 4; }
+.d-data { stroke: var(--c-run); }
+.d-bus { stroke: var(--c-deploy); stroke-dasharray: 5 4; }
 .d-label { fill: var(--text-primary); font: 600 15px var(--font); text-anchor: middle; }
 .d-small { fill: var(--text-muted); font: 400 11px var(--mono); text-anchor: middle; }
 .d-tier { fill: var(--text-muted); font: 500 11px var(--mono); letter-spacing: 0.14em; }
