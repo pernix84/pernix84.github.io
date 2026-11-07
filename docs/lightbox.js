@@ -15,7 +15,7 @@
 
   document.addEventListener('click', (event) => {
     const shot = event.target.closest('.shot');
-    if (!shot) return;
+    if (!shot || shot.closest('.is-empty')) return;
     const img = shot.querySelector('img');
     if (!img) return;
     if (!dialog) build();

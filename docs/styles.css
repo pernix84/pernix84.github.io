@@ -239,9 +239,6 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
   box-shadow: inset 0 3px 0 var(--hue);
   display: flex; flex-direction: column;
 }
-/* Until a stop has its picture, it removes itself (onerror in index.html); with none left, hide the section and its nav link. */
-#tour:not(:has(.stop)) { display: none; }
-body:not(:has(#tour .stop)) nav a[href="#tour"] { display: none; }
 .shot {
   display: block; width: 100%; padding: 0; margin: 4px 0 0; font: inherit; color: inherit;
   aspect-ratio: 16 / 10;
@@ -323,3 +320,78 @@ code { font-family: var(--mono); font-size: 0.9em; color: var(--text-primary); }
 .d-dash { stroke-dasharray: 5 4; }
 .d-arrow { fill: var(--text-muted); }
 @media (max-width: 640px) { .d-tier { display: none; } }
+
+/* Picture container: a framed card in its pillar's colour. Filled, the card shows a zoomed crop of
+   the picture's detail and the lightbox the whole picture; empty, a dashed frame names what it
+   waits for (dashed means "not filled in yet", as on the chips).
+   Per stop, on the .shot button: --focus (where the detail is, "x% y%") and --zoom (how close). */
+.shot img { object-position: var(--focus, top left); transform-origin: var(--focus, top left); transform: scale(var(--zoom, 1)); }
+.shot:hover img, .shot:focus-visible img { transform: scale(var(--zoom, 1)); }
+.stop:not(.is-empty) .shot::after {
+  content: "Full screen ↗"; position: absolute; right: 8px; bottom: 8px; padding: 3px 8px;
+  border-radius: var(--radius-sign); background: var(--surface-sunken); color: var(--text-muted);
+  font: 500 0.68rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.stop.is-empty .shot {
+  cursor: default; border: 1px dashed var(--line-outline);
+  display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center;
+}
+.stop.is-empty .shot img { display: none; }
+.stop.is-empty .shot::before {
+  content: "Screenshot to come\A" attr(data-wait); white-space: pre-line;
+  font: 500 0.72rem/1.7 var(--mono); letter-spacing: 0.06em; color: var(--text-muted);
+}
+/* The full-size view: the picture fits the window, the caption stays in view under it */
+.lightbox { flex-direction: column; overflow: hidden; }
+.lightbox[open] { display: flex; }
+.lightbox figure { display: flex; flex-direction: column; min-height: 0; }
+.lightbox img { width: auto; max-width: 100%; max-height: calc(94vh - 90px); margin: 0 auto; object-fit: contain; }
+
+/* ===== Graphite review proposals (GRAPHITE-REVIEW.md), scratch copy only ===== */
+/* #1 diagram: neutral strokes, shape cues only */
+.d-entry, .d-domain, .d-data { stroke: var(--line-outline); }
+.d-bus { stroke: var(--line-outline); }
+/* #2 pillar: edge + number only, the number becomes the sign */
+.pillar { background: var(--surface-raised); }
+.pillar .chips li { border-color: var(--line-strong); }
+.pillar-highlight { border-color: var(--line-strong); box-shadow: inset 0 4px 0 var(--hue); }
+.num { font-family: var(--font-display); font-weight: 800; font-size: 1rem; letter-spacing: 0.04em; }
+/* #3 hero heading as signage, text optical size */
+html { font-optical-sizing: none; }
+h1 { text-transform: uppercase; letter-spacing: 0.02em; font-size: clamp(2rem, 4.6vw, 3.2rem); }
+/* #4 no glass */
+.site-header { background: var(--surface-sunken); backdrop-filter: none; }
+.lightbox::backdrop { background: rgb(12 13 14 / 0.92); backdrop-filter: none; }
+.lightbox-close { background: var(--surface-control); border-color: transparent; }
+/* #5 teal only for its jobs */
+.ticks li::marker { color: var(--text-muted); }
+.step.accent { background: var(--surface-raised); box-shadow: inset 0 3px 0 var(--c-proof); border-color: var(--line-strong); }
+/* #6 the sidecar is not temporary: solid, an observe edge */
+.sidecar { border: 1px solid var(--line-strong); box-shadow: inset 3px 0 0 var(--c-observe); }
+/* #7 still dot, no window chrome, no zoom */
+.dot { animation: none; box-shadow: none; }
+.terminal-bar span { width: auto; height: auto; border-radius: 0; background: none; }
+.eyebrow-label { font-family: var(--mono); font-weight: 500; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); }
+.shot:hover img, .shot:focus-visible img { transform: none; }
+/* #8 muted labels */
+.stop-label { color: var(--text-muted); }
+/* #9 facts filled, not outlined */
+.facts li { border-color: transparent; }
+
+/* Pictures inside the pillar cards: the card is the frame, so the figure drops its own */
+.pillar .stop { padding: 0; background: none; border: 0; box-shadow: none; }
+.pillar .stop figcaption { padding-top: 8px; }
+.pillar-shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pillar-shots .stop figcaption { font-size: 0.8rem; }
+.pillar-proof .stop { max-width: 560px; }
+/* The two half-width frames are too small for the picture's name; the caption under them says it */
+.pillar-shots .stop.is-empty .shot::before { content: "Screenshot to come"; }
+/* The picture closes the card: the note follows the chips, the picture sits at the foot, so the
+   pictures of one row share a baseline and no card has a hole in the middle */
+.pillar .note { margin-top: 0 !important; }
+.pillar > .stop, .pillar > .pillar-shots { margin-top: auto; padding-top: 4px; }
+/* Captions differ in length, which pushed the frames off one line: every caption reserves room for
+   three lines, so the frames of a row start at the same height. Only needed side by side. */
+@media (min-width: 641px) {
+  .pillar > .stop figcaption { min-height: calc(3 * 1.6em + 8px); }
+}

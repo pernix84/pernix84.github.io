@@ -25,7 +25,7 @@
     <nav aria-label="Sections">
       <a href="#pillars">Pillars</a>
       <a href="#flow">Request flow</a>
-      <a href="#tour">Tour</a>
+      
       <a href="#principles">Principles</a>
       <a href="#history">Tried &amp; retired</a>
       <a href="#side">On the side</a>
@@ -82,6 +82,10 @@
           <li>GitHub</li><li>YouTrack</li><li>Architecture in Git</li>
         </ul>
         <p class="note">The whole architecture lives in its own repo, as Markdown next to the code: the spec and its diagrams, decisions (ADRs), standards, feature notes and the design system. Every decision is recorded with its reasons and its date, from idea to accepted or retired, so any "why is it like this?" can be looked up, not remembered. Every shortcut is written down too, with the condition that ends it.</p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/plan-architecture-repo.png" alt="The architecture repo: the ADR index and a feature note" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>Decisions in Git.</b> The ADR index and a feature note, next to the code they shape.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar" style="--hue: var(--c-build)">
@@ -91,6 +95,10 @@
           <li>TeamCity</li><li>3 agents</li><li>Docker Registry</li><li>Gitea NuGet + npm feeds</li><li>Infisical · secrets</li>
         </ul>
         <p class="note">Each service publishes its typed API client as a NuGet package, and the BFF its TypeScript client as an npm package; consumers pin versions, so a contract change is a reviewed commit. Secrets live in Infisical and are injected at runtime, never written into a repo or an image.</p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/02-commit-to-artifact.png" alt="TeamCity build chain and package feed" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>Commit to artifact.</b> A TM service build: tests, image, and the published API client its consumers pin.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar pillar-highlight" style="--hue: var(--c-deploy)">
@@ -100,6 +108,10 @@
           <li>Deploy repo</li><li>Pinned image tags</li><li>Docker Compose</li><li>Bash scripts</li><li>TeamCity-driven</li>
         </ul>
         <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated first; then only the services whose image changed are replaced in place, the rest are left untouched. Prod gets the same image tag as test, never a rebuild. Self-healing reconcile from Git is built and waiting to be switched on.</p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/deploy-history.png" alt="The deploy repo: the pinned versions file and its history" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>What was live, and when.</b> The file that pins each environment's versions, and its history.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar" style="--hue: var(--c-run)">
@@ -109,6 +121,10 @@
           <li>Docker</li><li>PostgreSQL</li><li>NATS JetStream</li><li>3-node NATS cluster per environment</li><li>Test and prod kept apart</li>
         </ul>
         <p class="note">Every tier and environment has its own Docker network; test and prod each get their own NATS cluster and database.</p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/03-runtime.png" alt="NATS streams and the durable consumers reading them" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>Runtime.</b> The JetStream streams TM publishes to, and the durable consumers reading them.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar" style="--hue: var(--c-secure)">
@@ -118,6 +134,10 @@
           <li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li><li class="chip-temp">ngrok · temporary</li>
         </ul>
         <p class="note">Traefik is the front door and Keycloak the single sign-on behind it: the tools sign in through oauth2-proxy, while the TM app signs in with Keycloak directly (OIDC with PKCE) and its BFF validates every token. ngrok is a temporary tunnel to reach the box — it lands on Traefik, never on a service port, and it is meant to go. Databases and brokers are never exposed.</p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/01-front-door.png" alt="Keycloak sign-in and Traefik routers" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>The front door.</b> One login guards every tool; Traefik shows every route and the auth middleware on it.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar" style="--hue: var(--c-observe)">
@@ -127,6 +147,16 @@
           <li>Prometheus</li><li>Grafana</li><li>Jaeger + Elasticsearch</li><li>Seq</li><li>Uptime Kuma</li><li>cAdvisor</li><li>NATS Surveyor</li>
         </ul>
         <p class="note">Observability joins every network to scrape, so no metrics port is opened on the host.</p>
+        <div class="pillar-shots">
+          <figure class="stop">
+            <button class="shot" type="button"><img src="img/tour/04-one-request.png" alt="A Jaeger trace and the matching Seq log stream" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+            <figcaption><b>One request, followed.</b> A backoffice call traced through the BFF into both domain services.</figcaption>
+          </figure>
+          <figure class="stop">
+            <button class="shot" type="button"><img src="img/tour/05-health.png" alt="Grafana dashboards and Uptime Kuma" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+            <figcaption><b>Health at a glance.</b> Host, container, database and broker metrics, plus uptime of every endpoint.</figcaption>
+          </figure>
+        </div>
       </article>
 
       <article class="pillar pillar-proof" style="--hue: var(--c-proof)">
@@ -141,6 +171,10 @@
           <li>Database per service</li><li>API composition (BFF)</li><li>Transactional outbox</li><li>Domain events</li><li>Persistent messaging (NATS JetStream)</li><li>Retries and dead letters</li><li>Distributed tracing</li><li>Health check API</li><li>Contracts first: OpenAPI + AsyncAPI</li><li>Generated API clients</li><li>Externalized configuration</li><li>Service template</li>
         </ul>
         <p class="note">Routes and stops on a map with path editing, vehicles and drivers, trips, and a live map of every vehicle. A simulator drives it all through the public APIs, the way real vehicles and dispatchers would. <a href="tm.html">How TM is built →</a></p>
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/06-product.png" alt="The TM backoffice: routes drawn on a map in their own colours" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>The product.</b> What all of the above is for: the backoffice on real transit data. Taken from the mock build, where values no endpoint serves yet are tagged MOCK.</figcaption>
+        </figure>
       </article>
 
     </div>
@@ -193,7 +227,7 @@
     <!-- From the deploy repo's history, 2026-11-04: the six latest test deploys, and the count of
          deploy(test) commits. Refresh both together. -->
     <figure class="terminal">
-      <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="terminal-bar"><span class="eyebrow-label">Deploy repo · git log</span></div>
       <pre><code><span class="t-prompt">$</span> git log --date=short --format='%ad  %s' --grep='^deploy(test)'
 2026-11-03  deploy(test): tm-backoffice-frontend 25-f7ddea3
 2026-11-03  deploy(test): tm-transport-ops-services 40-9a78cf0
@@ -204,46 +238,6 @@
 <span class="t-muted">… 60 deploys to test since June 2026</span></code></pre>
       <figcaption>The deploy repo's history is the record of what ran: one commit per deploy, naming the service and the build it pinned — build number and commit.</figcaption>
     </figure>
-  </section>
-
-  <!-- Tour -->
-  <section id="tour" class="wrap section">
-    <h2>Guided tour</h2>
-    <p class="section-lede">
-      The tools sit behind single sign-on, so the tour is told in screenshots of the real thing.
-    </p>
-
-    <!-- A stop removes itself until its img/tour/NN-*.png exists; with no stop left, the section and
-         its nav link hide too (styles.css, "Tour"). No lazy loading here: a lazy image that never
-         loads never fails, so its empty stop would stay. -->
-    <!-- A picture is a framed thumbnail in its pillar's colour; a click opens it full size (the
-         lightbox at the end of the page). The page's identity frames the pictures, not the reverse. -->
-    <div class="tour">
-      <figure class="stop" style="--hue: var(--c-secure)">
-        <button class="shot" type="button"><img src="img/tour/01-front-door.png" alt="Keycloak sign-in and Traefik routers" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 1 · Secure access</span><b>The front door.</b> One login guards every tool; Traefik shows every route and the auth middleware on it.</figcaption>
-      </figure>
-      <figure class="stop" style="--hue: var(--c-build)">
-        <button class="shot" type="button"><img src="img/tour/02-commit-to-artifact.png" alt="TeamCity build chain and package feed" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 2 · Build &amp; release</span><b>Commit to artifact.</b> A TM service build: tests, image, and the published API client its consumers pin.</figcaption>
-      </figure>
-      <figure class="stop" style="--hue: var(--c-run)">
-        <button class="shot" type="button"><img src="img/tour/03-runtime.png" alt="NATS streams and the durable consumers reading them" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 3 · Run</span><b>Runtime.</b> The JetStream streams TM publishes to, and the durable consumers reading them.</figcaption>
-      </figure>
-      <figure class="stop" style="--hue: var(--c-observe)">
-        <button class="shot" type="button"><img src="img/tour/04-one-request.png" alt="A Jaeger trace and the matching Seq log stream" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 4 · Observe</span><b>One request, followed.</b> A backoffice call traced through the BFF into both domain services.</figcaption>
-      </figure>
-      <figure class="stop" style="--hue: var(--c-observe)">
-        <button class="shot" type="button"><img src="img/tour/05-health.png" alt="Grafana dashboards and Uptime Kuma" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 5 · Observe</span><b>Health at a glance.</b> Host, container, database and broker metrics, plus uptime of every endpoint.</figcaption>
-      </figure>
-      <figure class="stop" style="--hue: var(--c-proof)">
-        <button class="shot" type="button"><img src="img/tour/06-product.png" alt="The TM backoffice: routes drawn on a map in their own colours" onerror="this.closest('figure').remove()"></button>
-        <figcaption><span class="stop-label">Stop 6 · Prove it: TM</span><b>The product.</b> What all of the above is for: the backoffice on real transit data. Taken from the mock build, where values no endpoint serves yet are tagged MOCK.</figcaption>
-      </figure>
-    </div>
   </section>
 
   <!-- Principles -->

@@ -122,39 +122,39 @@
     <h2>Patterns in use</h2>
     <p class="section-lede">Each one is in the code today, not on a wish list.</p>
     <div class="pillars">
-      <article class="pillar" style="--hue: var(--c-run)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Database per service</h3></div>
         <p>Fleet and Transport operations each own a PostgreSQL database. Data crosses a boundary only through an API or an event.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-plan)">
+      <article class="pillar">
         <div class="pillar-head"><h3>BFF without a database</h3></div>
         <p>The backoffice gets one entry point that composes the domain services for its screens. It stores nothing, and every call it makes has a time budget.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-deploy)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Transactional outbox</h3></div>
         <p>An integration event is saved in the same transaction as the change that caused it, then published. No change without its event, no event without its change.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-build)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Aggregates and domain events</h3></div>
         <p>State-stored aggregates guard the rules and raise events. Deliberately no event sourcing and no full CQRS — the outbox gives what is needed.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-secure)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Retries and dead letters</h3></div>
         <p>Each consumer owns its durable on the publisher's stream. A message that fails every delivery is parked on a dead-letter subject, not dropped.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-observe)">
+      <article class="pillar">
         <div class="pillar-head"><h3>One trace across the bus</h3></div>
         <p>W3C trace context travels on the message headers, so a request and the events it causes show up as one trace.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-proof)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Contracts first, clients generated</h3></div>
         <p>Every API publishes OpenAPI; clients are generated — Kiota for .NET, Orval for the React app — and published as packages. Events are described in AsyncAPI.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-plan)">
+      <article class="pillar">
         <div class="pillar-head"><h3>Shared libraries, one way per mechanism</h3></div>
         <p>Messaging, tracing and health reporting live once, in versioned NuGet packages every service consumes — no copy-paste between services.</p>
       </article>
-      <article class="pillar" style="--hue: var(--c-build)">
+      <article class="pillar">
         <div class="pillar-head"><h3>A service template</h3></div>
         <p>New services start from a template with the layers, health reporting and telemetry already in place, so every service looks and runs the same way.</p>
       </article>
@@ -168,22 +168,22 @@
       yet are tagged <b>MOCK</b> on purpose: a build is either mock or real, never both, and a
       real build cannot show a mock value.
     </p>
-    <!-- Each figure removes itself until its picture exists in img/tm/. -->
+    <!-- Until its picture exists in img/tm/, a figure shows an empty dashed frame naming it. -->
     <div class="tour">
-      <figure class="stop" style="--hue: var(--c-proof)">
-        <button class="shot" type="button"><img src="img/tm/routes-map.png" alt="Several routes drawn on a map, each in its colour, with a legend" onerror="this.closest('figure').remove()"></button>
+      <figure class="stop">
+        <button class="shot" type="button"><img src="img/tm/routes-map.png" alt="Several routes drawn on a map, each in its colour, with a legend" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Network</span><b>Routes on a map.</b> Pick routes, see them together in their own colours.</figcaption>
       </figure>
-      <figure class="stop" style="--hue: var(--c-proof)">
-        <button class="shot" type="button"><img src="img/tm/path-editing.png" alt="The path editor with a route's points" onerror="this.closest('figure').remove()"></button>
+      <figure class="stop">
+        <button class="shot" type="button"><img src="img/tm/path-editing.png" alt="The path editor with a route's points" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Network</span><b>Path editing.</b> A route's path changed point by point; running trips keep the path they started on.</figcaption>
       </figure>
-      <figure class="stop" style="--hue: var(--c-proof)">
-        <button class="shot" type="button"><img src="img/tm/trips.png" alt="Trips list with a running trip's details open" onerror="this.closest('figure').remove()"></button>
+      <figure class="stop">
+        <button class="shot" type="button"><img src="img/tm/trips.png" alt="Trips list with a running trip's details open" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Operations</span><b>Trips.</b> Start a trip with a vehicle and a driver, then follow it.</figcaption>
       </figure>
-      <figure class="stop" style="--hue: var(--c-proof)">
-        <button class="shot" type="button"><img src="img/tm/live-map.png" alt="Live map: vehicles on their lines, one selected with its next stop" onerror="this.closest('figure').remove()"></button>
+      <figure class="stop">
+        <button class="shot" type="button"><img src="img/tm/live-map.png" alt="Live map: vehicles on their lines, one selected with its next stop" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Operations</span><b>Live map.</b> Every vehicle where it is now; stale and lost positions surface first.</figcaption>
       </figure>
     </div>
