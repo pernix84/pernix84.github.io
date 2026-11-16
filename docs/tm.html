@@ -82,7 +82,7 @@
           </marker>
         </defs>
         <text x="20" y="40" class="d-tier">CLIENT</text>
-        <rect x="270" y="18" width="220" height="48" rx="6" class="d-box"/>
+        <rect x="270" y="18" width="220" height="48" rx="6" class="d-box d-entry"/>
         <text x="380" y="47" class="d-label">Backoffice (React)</text>
 
         <text x="20" y="128" class="d-tier">ENTRY POINT</text>
@@ -115,46 +115,47 @@
         <line x1="470" y1="262" x2="420" y2="298" class="d-line d-dash" marker-start="url(#arr)" marker-end="url(#arr)"/>
       </svg>
       <figcaption>Solid: synchronous call. Dashed: events through JetStream, written via an outbox.</figcaption>
+      <p class="legend legend-center"><span style="--svc: var(--s-entry)">entry point and its client</span><span style="--svc: var(--s-domain)">domain services</span><span style="--svc: var(--s-data)">data and messaging</span></p>
     </figure>
   </section>
 
   <section id="patterns" class="wrap section">
     <h2>Patterns in use</h2>
-    <p class="section-lede">Each one is in the code today, not on a wish list.</p>
+    <p class="section-lede">Each one is in the code today, not on a wish list. The colour says where it lives: one of TM's parts, as in the diagram, or the platform pillar that gives it.</p>
     <div class="pillars">
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--s-data)">
         <div class="pillar-head"><h3>Database per service</h3></div>
         <p>Fleet and Transport operations each own a PostgreSQL database. Data crosses a boundary only through an API or an event.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--s-entry)">
         <div class="pillar-head"><h3>BFF without a database</h3></div>
         <p>The backoffice gets one entry point that composes the domain services for its screens. It stores nothing, and every call it makes has a time budget.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--s-domain)">
         <div class="pillar-head"><h3>Transactional outbox</h3></div>
         <p>An integration event is saved in the same transaction as the change that caused it, then published. No change without its event, no event without its change.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--s-domain)">
         <div class="pillar-head"><h3>Aggregates and domain events</h3></div>
         <p>State-stored aggregates guard the rules and raise events. Deliberately no event sourcing and no full CQRS — the outbox gives what is needed.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--s-data)">
         <div class="pillar-head"><h3>Retries and dead letters</h3></div>
         <p>Each consumer owns its durable on the publisher's stream. A message that fails every delivery is parked on a dead-letter subject, not dropped.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--c-observe)">
         <div class="pillar-head"><h3>One trace across the bus</h3></div>
         <p>W3C trace context travels on the message headers, so a request and the events it causes show up as one trace.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--c-plan)">
         <div class="pillar-head"><h3>Contracts first, clients generated</h3></div>
         <p>Every API publishes OpenAPI; clients are generated — Kiota for .NET, Orval for the React app — and published as packages. Events are described in AsyncAPI.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--c-build)">
         <div class="pillar-head"><h3>Shared libraries, one way per mechanism</h3></div>
         <p>Messaging, tracing and health reporting live once, in versioned NuGet packages every service consumes — no copy-paste between services.</p>
       </article>
-      <article class="pillar">
+      <article class="pillar" style="--hue: var(--c-build)">
         <div class="pillar-head"><h3>A service template</h3></div>
         <p>New services start from a template with the layers, health reporting and telemetry already in place, so every service looks and runs the same way.</p>
       </article>
@@ -170,19 +171,19 @@
     </p>
     <!-- Until its picture exists in img/tm/, a figure shows an empty dashed frame naming it. -->
     <div class="tour">
-      <figure class="stop">
+      <figure class="stop" style="--hue: var(--s-entry)">
         <button class="shot" type="button"><img src="img/tm/routes-map.png" alt="Several routes drawn on a map, each in its colour, with a legend" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Network</span><b>Routes on a map.</b> Pick routes, see them together in their own colours.</figcaption>
       </figure>
-      <figure class="stop">
+      <figure class="stop" style="--hue: var(--s-entry)">
         <button class="shot" type="button"><img src="img/tm/path-editing.png" alt="The path editor with a route's points" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
-        <figcaption><span class="stop-label">Network</span><b>Path editing.</b> A route's path changed point by point; running trips keep the path they started on.</figcaption>
+        <figcaption><span class="stop-label">Network</span><b>Path editing.</b> A route's path changed point by point; running trips keep the stops they started with.</figcaption>
       </figure>
-      <figure class="stop">
+      <figure class="stop" style="--hue: var(--s-entry)">
         <button class="shot" type="button"><img src="img/tm/trips.png" alt="Trips list with a running trip's details open" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Operations</span><b>Trips.</b> Start a trip with a vehicle and a driver, then follow it.</figcaption>
       </figure>
-      <figure class="stop">
+      <figure class="stop" style="--hue: var(--s-entry)">
         <button class="shot" type="button"><img src="img/tm/live-map.png" alt="Live map: vehicles on their lines, one selected with its next stop" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
         <figcaption><span class="stop-label">Operations</span><b>Live map.</b> Every vehicle where it is now; stale and lost positions surface first.</figcaption>
       </figure>

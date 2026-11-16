@@ -41,7 +41,8 @@
     <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Self-hosted · cloud native, at home</p>
     <h1>Everything around the application.</h1>
     <p class="lede">
-      MRZ is a self-hosted, cloud-native platform that covers the whole delivery chain —
+      MRZ is a self-hosted, cloud-native platform, built almost entirely on open-source and free
+      software, that covers the whole delivery chain —
       planning, building, running, securing and observing software. It is built to carry
       products, not one app: everything a product needs around its code is already in place, so
       a new product starts from the template and plugs in. <strong>TM</strong>, a
@@ -49,7 +50,9 @@
       to follow.
     </p>
     <ul class="facts" aria-label="At a glance">
+      <li><b>1</b> person</li>
       <li><b>1</b> Linux host</li>
+      <li><b>60+</b> containers</li>
       <li><b>5</b> tiers</li>
       <li><b>2</b> app environments</li>
       <li><b>1st</b> product: TM, more to come</li>
@@ -59,12 +62,12 @@
       <span class="callout-label">One box</span>
       <p>
         Everything on this page — CI server and agents, NATS clusters, databases, the whole
-        observability stack, the apps — runs on a single Linux machine. It is already carrying a
-        lot of containers, and it is still fast. No VM layers in between: Linux and Docker.
+        observability stack, the apps — runs on a single Linux machine. It carries more than
+        60 containers, and it is still fast. No VM layers in between: Linux and Docker.
         And it starts itself: power the host on, and Docker brings every tier back up, from the CI
         server to the apps, with no hands on the keyboard.
       </p>
-      <!-- TODO: add the hardware line (CPU · RAM · disk) and a container count from `docker ps -q | wc -l`. -->
+      <!-- TODO: add the hardware line (CPU · RAM · disk). Container count: 65 (owner, 2026-11-16), shown as 60+ since it grows. -->
     </aside>
   </section>
 
@@ -81,7 +84,18 @@
         <ul class="chips">
           <li>GitHub</li><li>YouTrack</li><li>Architecture in Git</li>
         </ul>
-        <p class="note">The whole architecture lives in its own repo, as Markdown next to the code: the spec and its diagrams, decisions (ADRs), standards, feature notes and the design system. Every decision is recorded with its reasons and its date, from idea to accepted or retired, so any "why is it like this?" can be looked up, not remembered. Every shortcut is written down too, with the condition that ends it.</p>
+        <p class="note">Every decision is written down with its reasons and its date, and every shortcut with the condition that ends it, so any "why is it like this?" can be looked up, not remembered. The whole architecture lives in its own repo, as Markdown next to the code: the spec and its diagrams, decisions (ADRs), standards, feature notes and the design system. An AI agent team does much of the legwork under the same written rules, and it never commits: a person decides and commits.</p>
+        <details class="how">
+          <summary>How it works</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-1-feature-board.png" alt="The feature board: ideas, drafts, in progress, done" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>An idea is one line on the feature board. It gets a number only when it is prioritised.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-2-feature-note.png" alt="A feature note: its checklist and open questions" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A working note settles the boundaries and open questions. Nothing is built before it is approved.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-3-ticket-commits.png" alt="A YouTrack ticket with the commits that name it" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The ticket is written from the note, and every commit names it: YouTrack shows a ticket's commits, TeamCity a build's.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-4-decision.png" alt="A decision record with a dated amendment" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A question that binds more than one feature becomes a decision record, amended in place and dated when it changes.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-5-tech-debt.png" alt="A tech-debt entry and the trigger that ends it" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A shortcut is written down in the same change, with the condition that ends it.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-6-agent-team.png" alt="The agent team: its roles and a review report" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>AI agents draft, build, review and check for drift, under written roles. A person decides and commits.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/plan-architecture-repo.png" alt="The architecture repo: the ADR index and a feature note" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>Decisions in Git.</b> The ADR index and a feature note, next to the code they shape.</figcaption>
@@ -95,6 +109,16 @@
           <li>TeamCity</li><li>3 agents</li><li>Docker Registry</li><li>Gitea NuGet + npm feeds</li><li>Infisical · secrets</li>
         </ul>
         <p class="note">Each service publishes its typed API client as a NuGet package, and the BFF its TypeScript client as an npm package; consumers pin versions, so a contract change is a reviewed commit. Secrets live in Infisical and are injected at runtime, never written into a repo or an image.</p>
+        <details class="how">
+          <summary>How it works</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/02-1-build-started.png" alt="TeamCity: a build started by a push" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A push to GitHub starts the build in TeamCity.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/02-2-parameters.png" alt="A service's parameter file beside the shared build" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Every service goes through the same build. What differs sits in a small parameter file in its repo.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/02-3-tests.png" alt="A service build's tests in TeamCity" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Unit, integration and architecture tests run, and the image goes to the Docker registry.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/02-4-package-feed.png" alt="The Gitea feed: a generated client and its versions" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The API client is generated from the service's OpenAPI document and published to the Gitea feed.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/02-5-client-bump.png" alt="A consumer's commit moving to a new client version" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Consumers move to the new client when they are ready: a contract change is a reviewed commit.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/02-commit-to-artifact.png" alt="TeamCity build chain and package feed" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>Commit to artifact.</b> A TM service build: tests, image, and the published API client its consumers pin.</figcaption>
@@ -107,7 +131,17 @@
         <ul class="chips">
           <li>Deploy repo</li><li>Pinned image tags</li><li>Docker Compose</li><li>Bash scripts</li><li>TeamCity-driven</li>
         </ul>
-        <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated first; then only the services whose image changed are replaced in place, the rest are left untouched. Prod gets the same image tag as test, never a rebuild. Self-healing reconcile from Git is built and waiting to be switched on.</p>
+        <p class="note">Every deploy ends in a commit that pins the new version — the history of that file is the history of what was live. Migrations run gated first; then only the services whose image changed are replaced in place, the rest are left untouched. Prod is set up to take test's image tag, never a rebuild; test is where TM runs today. Self-healing reconcile from Git is built and waiting to be switched on.</p>
+        <details class="how">
+          <summary>How it works</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-1-deploy-build.png" alt="A Deploy build in TeamCity and its steps" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A deploy is a TeamCity build running one script, for one service and one environment. Test deploys by itself.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-2-secrets-step.png" alt="The deploy steps: fetch secrets, deploy, clean up always" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Secrets are fetched in one isolated step and shredded at the end, even when the deploy fails.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-3-migrations.png" alt="The deploy log: the gated migration step" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Migrations run first. If they fail, nothing is touched and the running version stays up.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-4-rollout.png" alt="The deploy log: the changed services rolled out" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Only the changed services are replaced. One that fails rolls back to the version it ran before.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-5-version-pinned.png" alt="The deploy repo: the commit that pinned the new version" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>On success the build commits the new tag to the deploy repo, so Git always matches what is live.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/deploy-history.png" alt="The deploy repo: the pinned versions file and its history" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>What was live, and when.</b> The file that pins each environment's versions, and its history.</figcaption>
@@ -118,9 +152,19 @@
         <div class="pillar-head"><span class="num">04</span><h3>Run</h3></div>
         <p>The application platform: storage, messaging, isolation.</p>
         <ul class="chips">
-          <li>Docker</li><li>PostgreSQL</li><li>NATS JetStream</li><li>3-node NATS cluster per environment</li><li>Test and prod kept apart</li>
+          <li>Docker</li><li>PostgreSQL</li><li>NATS JetStream</li><li>3-node NATS cluster per environment</li><li>Test and prod kept apart</li><li>Portainer</li>
         </ul>
-        <p class="note">Every tier and environment has its own Docker network; test and prod each get their own NATS cluster and database.</p>
+        <p class="note">Every tier and environment has its own Docker network; test and prod each get their own NATS cluster and database. Portainer is the quick way in: a container, its setup and its logs.</p>
+        <details class="how">
+          <summary>How it works: when something falls over</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/04-1-back-after-restart.png" alt="Uptime Kuma after a host restart: every monitor green again" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>After a power cut, the host starts every tier again, the apps included, with scripts that stop and start them in order.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/04-2-container-restarted.png" alt="Portainer: a container's restarts and its logs" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A crashed container restarts on its own.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/04-3-health-check.png" alt="Traefik: a service and its health" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A health check tells Traefik, and an unhealthy instance gets no traffic until it is healthy again.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/04-4-consumer-catching-up.png" alt="NATS Surveyor: a durable consumer catching up" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Messages wait on the stream: a consumer that was down picks up where it stopped.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/04-5-dead-letter.png" alt="A message parked on the dead-letter subject" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A message that fails every retry is parked on a dead-letter subject, not dropped.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/03-runtime.png" alt="NATS streams and the durable consumers reading them" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>Runtime.</b> The JetStream streams TM publishes to, and the durable consumers reading them.</figcaption>
@@ -134,6 +178,16 @@
           <li>Traefik</li><li>oauth2-proxy</li><li>Keycloak SSO</li><li class="chip-temp">ngrok · temporary</li>
         </ul>
         <p class="note">Traefik is the front door and Keycloak the single sign-on behind it: the tools sign in through oauth2-proxy, while the TM app signs in with Keycloak directly (OIDC with PKCE) and its BFF validates every token. ngrok is a temporary tunnel to reach the box — it lands on Traefik, never on a service port, and it is meant to go. Databases and brokers are never exposed.</p>
+        <details class="how">
+          <summary>How it works: signing in</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/05-1-routers.png" alt="Traefik: the routers and the sign-in middleware on them" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Every request comes in through Traefik. Databases and brokers have no route at all.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/05-2-sign-in.png" alt="The Keycloak sign-in page, with Google" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Opening a tool without a session sends you through oauth2-proxy to Keycloak.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/05-3-every-tool.png" alt="The tools, open after one sign-in" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>One sign-in covers every tool behind it, and it can simply be a Google account.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/05-4-tm-signed-in.png" alt="The TM backoffice, signed in" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The TM app signs in with Keycloak itself (OIDC with PKCE) and sends its token with every call.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/05-5-token-checked.png" alt="A call without a token, refused by the BFF" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The BFF checks that token before it calls any service.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/01-front-door.png" alt="Keycloak sign-in and Traefik routers" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>The front door.</b> One login guards every tool; Traefik shows every route and the auth middleware on it.</figcaption>
@@ -146,31 +200,49 @@
         <ul class="chips">
           <li>Prometheus</li><li>Grafana</li><li>Jaeger + Elasticsearch</li><li>Seq</li><li>Uptime Kuma</li><li>cAdvisor</li><li>NATS Surveyor</li>
         </ul>
-        <p class="note">Observability joins every network to scrape, so no metrics port is opened on the host.</p>
-        <div class="pillar-shots">
-          <figure class="stop">
-            <button class="shot" type="button"><img src="img/tour/04-one-request.png" alt="A Jaeger trace and the matching Seq log stream" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
-            <figcaption><b>One request, followed.</b> A backoffice call traced through the BFF into both domain services.</figcaption>
-          </figure>
-          <figure class="stop">
-            <button class="shot" type="button"><img src="img/tour/05-health.png" alt="Grafana dashboards and Uptime Kuma" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
-            <figcaption><b>Health at a glance.</b> Host, container, database and broker metrics, plus uptime of every endpoint.</figcaption>
-          </figure>
-        </div>
+        <p class="note">A service doesn't ship without logs, traces and metrics: the template and the shared libraries give it all three. Observability joins every network to scrape, so no metrics port is opened on the host.</p>
+        <details class="how">
+          <summary>How it works: one request, followed</summary>
+          <ol class="walk">
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/06-1-trace-header.png" alt="The browser's network tab: the trace id in the response" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The BFF starts a trace and sends its id back to the browser in a response header.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/06-2-one-trace.png" alt="Jaeger: one trace through the BFF, both services and an event" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The trace travels into Fleet and Transport ops and onto the bus. Jaeger shows it all as one trace.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/06-3-logs-by-trace.png" alt="Seq: the logs of one request, filtered by its trace id" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Every log line goes to Seq with the same trace id, so the logs of one request are one filter away.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/06-4-dashboards.png" alt="A Grafana dashboard: host, containers, database, broker" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Prometheus scrapes the metrics from inside each network, and Grafana shows them.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/06-5-uptime.png" alt="Uptime Kuma: every endpoint and its uptime" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Uptime Kuma checks every endpoint, all the time.</figcaption></figure></li>
+          </ol>
+        </details>
+        <!-- One picture per pillar (2026-11-16): "Health at a glance" (img/tour/05-health.png) moved
+             into the walkthrough, steps 4 and 5 (img/how/06-4-dashboards.png, 06-5-uptime.png). -->
+        <figure class="stop">
+          <button class="shot" type="button"><img src="img/tour/04-one-request.png" alt="A Jaeger trace and the matching Seq log stream" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+          <figcaption><b>One request, followed.</b> A backoffice call traced through the BFF into both domain services.</figcaption>
+        </figure>
       </article>
 
       <article class="pillar pillar-proof" style="--hue: var(--c-proof)">
         <div class="pillar-head"><span class="num">07</span><h3>Prove it: TM</h3></div>
         <p>The first product on the platform: transit management, not a hello-world. The next ones get the same six pillars.</p>
         <ul class="chips">
-          <li>.NET 10</li><li>Fleet service</li><li>Transport ops service</li><li>Backoffice BFF</li><li>React backoffice</li>
+          <li>.NET 10</li><li class="chip-svc" style="--svc: var(--s-entry)">React backoffice</li><li class="chip-svc" style="--svc: var(--s-entry)">Backoffice BFF</li><li class="chip-svc" style="--svc: var(--s-domain)">Transport ops service</li><li class="chip-svc" style="--svc: var(--s-domain)">Fleet service</li><li class="chip-svc" style="--svc: var(--s-data)">PostgreSQL · NATS</li>
         </ul>
-        <!-- Each pattern chip is checked in code before it goes here (checked 2026-11-04). -->
+        <!-- Each pattern chip is checked in code before it goes here (checked 2026-11-04). Its dot is
+             where it lives: one of TM's parts, or the platform pillar that gives it. -->
         <span class="chips-label">Microservice patterns in the code</span>
         <ul class="chips" aria-label="Microservice patterns in the code">
-          <li>Database per service</li><li>API composition (BFF)</li><li>Transactional outbox</li><li>Domain events</li><li>Persistent messaging (NATS JetStream)</li><li>Retries and dead letters</li><li>Distributed tracing</li><li>Health check API</li><li>Contracts first: OpenAPI + AsyncAPI</li><li>Generated API clients</li><li>Externalized configuration</li><li>Service template</li>
+          <li class="chip-svc" style="--svc: var(--s-data)">Database per service</li><li class="chip-svc" style="--svc: var(--s-entry)">API composition (BFF)</li><li class="chip-svc" style="--svc: var(--s-domain)">Transactional outbox</li><li class="chip-svc" style="--svc: var(--s-domain)">Domain events</li><li class="chip-svc" style="--svc: var(--s-data)">Persistent messaging (NATS JetStream)</li><li class="chip-svc" style="--svc: var(--s-data)">Retries and dead letters</li><li class="chip-svc" style="--svc: var(--c-observe)">Distributed tracing</li><li class="chip-svc" style="--svc: var(--c-observe)">Health check API</li><li class="chip-svc" style="--svc: var(--c-plan)">Contracts first: OpenAPI + AsyncAPI</li><li class="chip-svc" style="--svc: var(--c-build)">Generated API clients</li><li class="chip-svc" style="--svc: var(--c-deploy)">Externalized configuration</li><li class="chip-svc" style="--svc: var(--c-build)">Service template</li>
         </ul>
-        <p class="note">Routes and stops on a map with path editing, vehicles and drivers, trips, and a live map of every vehicle. A simulator drives it all through the public APIs, the way real vehicles and dispatchers would. <a href="tm.html">How TM is built →</a></p>
+        <p class="legend"><span style="--svc: var(--s-entry)">entry point</span><span style="--svc: var(--s-domain)">domain services</span><span style="--svc: var(--s-data)">data and messaging</span><span>other colours: the pillar it comes from</span></p>
+        <p class="note">Routes and stops on a map with path editing, vehicles and drivers, trips, and a live map of every vehicle. A simulator drives it all through the public APIs, the way real vehicles and dispatchers would. Two services, not ten: a new one only where the data and the release pace really differ. <a href="tm.html">How TM is built →</a></p>
+        <details class="how">
+          <summary>How it works: a trip, from start to the live map</summary>
+          <ol class="walk">
+            <li style="--hue: var(--s-entry)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-1-start-trip.png" alt="Starting a trip: route, vehicle and driver" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A dispatcher picks a route, a vehicle and, if they want, a driver.</figcaption></figure></li>
+            <li style="--hue: var(--s-entry)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-2-start-trace.png" alt="Jaeger: the start call, from the BFF to Fleet, then Transport ops" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The BFF asks Fleet whether the vehicle may run. Transport ops never calls Fleet itself.</figcaption></figure></li>
+            <li style="--hue: var(--s-domain)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-3-trip-stops.png" alt="A running trip and the stops it started with" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>Transport ops starts the trip and copies the route's stops onto it, so a later edit of the route doesn't rewrite a running trip.</figcaption></figure></li>
+            <li style="--hue: var(--s-domain)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-4-simulator.png" alt="The simulator driving vehicles along their routes" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The simulator, like a real vehicle, reports positions through the public API.</figcaption></figure></li>
+            <li style="--hue: var(--s-entry)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-5-live-map.png" alt="The live map: every vehicle where it is now" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The live map shows every vehicle where it is now; stale and lost positions come first.</figcaption></figure></li>
+          </ol>
+        </details>
         <figure class="stop">
           <button class="shot" type="button"><img src="img/tour/06-product.png" alt="The TM backoffice: routes drawn on a map in their own colours" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
           <figcaption><b>The product.</b> What all of the above is for: the backoffice on real transit data. Taken from the mock build, where values no endpoint serves yet are tagged MOCK.</figcaption>
@@ -190,9 +262,9 @@
       <li><span class="step step-temp" style="--hue: var(--c-secure)">ngrok</span><small>temporary</small></li>
       <li><span class="step" style="--hue: var(--c-secure)">Traefik</span><small>routes by host</small></li>
       <li><span class="step" style="--hue: var(--c-secure)">Keycloak</span><small>sign-in · OIDC + PKCE</small></li>
-      <li><span class="step accent">TM frontend + BFF</span><small>checks the token · composes views</small></li>
-      <li><span class="step accent">Fleet · Transport ops</span><small>own data, own rules</small></li>
-      <li><span class="step" style="--hue: var(--c-run)">PostgreSQL · NATS</span><small>never exposed</small></li>
+      <li><span class="step step-tm" style="--hue: var(--s-entry)">TM frontend + BFF</span><small>checks the token · composes views</small></li>
+      <li><span class="step step-tm" style="--hue: var(--s-domain)">Fleet · Transport ops</span><small>own data, own rules</small></li>
+      <li><span class="step step-tm" style="--hue: var(--s-data)">PostgreSQL · NATS</span><small>never exposed</small></li>
     </ol>
 
     <div class="sidecar">
@@ -278,11 +350,12 @@
     <ul class="chips retired">
       <li>Harness</li><li>HashiCorp Vault</li><li>Fluentd</li><li>SigNoz</li><li>Uptrace</li>
       <li>OpenSearch (Jaeger backend)</li><li>Jaeger Spark jobs</li><li>Kestra</li><li>Loggifly</li>
-      <li>ntfy</li><li>Heimdall</li><li>Defacto NATS UI</li><li>Portainer</li><li>Verdaccio (npm registry, Gitea won)</li>
+      <li>ntfy</li><li>Heimdall</li><li>Defacto NATS UI</li><li>Verdaccio (npm registry, Gitea won)</li>
+      <li>OpenObserve</li>
     </ul>
-    <h3 class="sub">Being evaluated</h3>
+    <h3 class="sub">Set up, waiting for a need</h3>
     <ul class="chips evaluating">
-      <li>Garage (S3 storage)</li><li>OpenObserve</li>
+      <li>Garage (S3 storage)</li>
     </ul>
   </section>
 

@@ -40,6 +40,12 @@
   --c-observe: #5fd38d;
   --c-proof: var(--accent);
 
+  /* TM's parts, coloured the same way everywhere (the request flow, pillar 07, the TM page): the
+     entry point and its client, the domain services, data and messaging (Run's colour). */
+  --s-entry: var(--accent);
+  --s-domain: #ee8ad2;
+  --s-data: var(--c-run);
+
   /* Three radii, each with one job */
   --radius-pill: 999px;
   --radius-sign: 2px;
@@ -150,6 +156,33 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
 /* Full width once the grid has two columns or more: the proof closes the grid, not a lone card */
 @media (min-width: 720px) { .pillars > .pillar-proof { grid-column: 1 / -1; } }
 .pillar-highlight { border-color: color-mix(in srgb, var(--hue) 45%, var(--line-strong)); }
+/* "How it works" under a pillar: a plain disclosure, no script. Its colour marks the pillar the way
+   the edge and the number do (the link, the step numbers, an edge on the open list), never a fill. */
+.how summary { cursor: pointer; width: fit-content; font-family: var(--mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.04em; color: var(--hue); }
+.how summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.how summary:focus-visible { outline-color: var(--hue); }
+.how[open] summary { margin-bottom: 10px; }
+/* Its content: a quick picture walkthrough. Numbered steps, a thumbnail each, a click opens the
+   picture full size (lightbox.js). Two to a row in a card, one row in the full-width proof card. */
+.walk {
+  list-style: none; margin: 0; padding: 0 0 0 12px; counter-reset: step;
+  border-left: 2px solid var(--hue);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr)); gap: 14px 10px;
+}
+.walk .stop { --hue: inherit; padding: 0; background: none; border: 0; box-shadow: none; }
+.walk .shot { margin: 0; }
+.walk .stop figcaption { padding-top: 6px !important; font-size: 0.8rem; line-height: 1.45; color: var(--text-secondary); }
+.walk .stop figcaption::before { counter-increment: step; content: counter(step); font-family: var(--mono); font-weight: 500; color: var(--hue); margin-right: 6px; }
+/* TM's parts as dots: on a chip, and in the legend that names them */
+.chip-svc::before, .legend span::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--svc); margin-right: 7px; vertical-align: 1px;
+}
+/* In the full-width proof card, the walkthrough is one row */
+.pillar-proof .walk { grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); }
+/* TM's parts in the request flow: their colour's edge and a faint ground of it */
+.step-tm { background: color-mix(in srgb, var(--hue) 9%, var(--surface-raised)); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); }
 
 /* Hero callout */
 .callout {
@@ -177,9 +210,10 @@ h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
   border-radius: var(--radius-pill); padding: 2px 10px;
 }
 .chips-label { margin-bottom: -4px; }
+/* Struck through but readable: the text stays light, the line under it is darker and thin */
 .retired li {
-  background: transparent; border-color: var(--line-strong); color: var(--text-muted);
-  text-decoration: line-through; text-decoration-color: var(--text-secondary); text-decoration-thickness: 1.5px;
+  background: transparent; border-color: var(--line-strong); color: var(--text-secondary);
+  text-decoration: line-through; text-decoration-color: var(--text-muted); text-decoration-thickness: 1px;
 }
 /* Dashed means unknown: still being evaluated, or temporary */
 .evaluating li, .pillar .chips li.chip-temp { background: transparent; border: 1px dashed var(--line-outline); color: var(--text-muted); }
@@ -347,10 +381,12 @@ code { font-family: var(--mono); font-size: 0.9em; color: var(--text-primary); }
 .lightbox figure { display: flex; flex-direction: column; min-height: 0; }
 .lightbox img { width: auto; max-width: 100%; max-height: calc(94vh - 90px); margin: 0 auto; object-fit: contain; }
 
-/* ===== Graphite review proposals (GRAPHITE-REVIEW.md), scratch copy only ===== */
-/* #1 diagram: neutral strokes, shape cues only */
-.d-entry, .d-domain, .d-data { stroke: var(--line-outline); }
-.d-bus { stroke: var(--line-outline); }
+/* ===== Graphite review proposals (GRAPHITE-REVIEW.md), accepted 2026-11-07 ===== */
+/* #1 diagram: reversed by the owner, 2026-11-16 ("TM feels dead"): the boxes take TM's part
+   colours, the same as the request flow, with a faint fill of their colour */
+.d-entry { stroke: var(--s-entry); fill: color-mix(in srgb, var(--s-entry) 7%, var(--surface-raised)); }
+.d-domain { stroke: var(--s-domain); fill: color-mix(in srgb, var(--s-domain) 7%, var(--surface-raised)); }
+.d-data, .d-bus { stroke: var(--s-data); fill: color-mix(in srgb, var(--s-data) 7%, var(--surface-raised)); }
 /* #2 pillar: edge + number only, the number becomes the sign */
 .pillar { background: var(--surface-raised); }
 .pillar .chips li { border-color: var(--line-strong); }
@@ -395,3 +431,16 @@ h1 { text-transform: uppercase; letter-spacing: 0.02em; font-size: clamp(2rem, 4
 @media (min-width: 641px) {
   .pillar > .stop figcaption { min-height: calc(3 * 1.6em + 8px); }
 }
+/* "How it works" sits at the card's foot, right above the picture, so the links of one row line up:
+   the free space goes above it, not between it and the picture */
+.pillar > .how { margin-top: auto; }
+.pillar > .how + .stop, .pillar > .how + .pillar-shots { margin-top: 0; }
+/* Walkthrough thumbnails are small: no "Full screen" tag, a short placeholder */
+.walk .stop .shot::after { content: none; }
+.walk .stop.is-empty .shot { padding: 8px; }
+.walk .stop.is-empty .shot::before { content: "Screenshot to come"; font-size: 0.62rem; }
+
+/* TM page, owner 2026-11-16 ("TM feels dead"): its legend under the diagram, and a faint ground
+   of each pattern's colour under its edge */
+.legend-center { justify-content: center; margin: 6px 0 0; }
+#patterns .pillar { background: linear-gradient(180deg, color-mix(in srgb, var(--hue) 8%, var(--surface-raised)) 0, var(--surface-raised) 96px); }
