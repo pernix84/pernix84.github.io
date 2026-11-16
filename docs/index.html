@@ -84,7 +84,7 @@
         <ul class="chips">
           <li>GitHub</li><li>YouTrack</li><li>Architecture in Git</li>
         </ul>
-        <p class="note">Every decision is written down with its reasons and its date, and every shortcut with the condition that ends it, so any "why is it like this?" can be looked up, not remembered. The whole architecture lives in its own repo, as Markdown next to the code: the spec and its diagrams, decisions (ADRs), standards, feature notes and the design system. An AI agent team does much of the legwork under the same written rules, and it never commits: a person decides and commits.</p>
+        <p class="note">Every decision is written down with its reasons and its date, and every shortcut with the condition that ends it, so any "why is it like this?" can be looked up, not remembered. The whole architecture lives in its own repo, as Markdown next to the code: the spec and its diagrams, decisions (ADRs), standards, feature notes and the design system. An AI agent team does much of the work under the same written rules; a person reviews it and commits.</p>
         <details class="how">
           <summary>How it works</summary>
           <ol class="walk">
@@ -93,7 +93,7 @@
             <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-3-ticket-commits.png" alt="A YouTrack ticket with the commits that name it" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The ticket is written from the note, and every commit names it: YouTrack shows a ticket's commits, TeamCity a build's.</figcaption></figure></li>
             <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-4-decision.png" alt="A decision record with a dated amendment" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A question that binds more than one feature becomes a decision record, amended in place and dated when it changes.</figcaption></figure></li>
             <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-5-tech-debt.png" alt="A tech-debt entry and the trigger that ends it" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>A shortcut is written down in the same change, with the condition that ends it.</figcaption></figure></li>
-            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-6-agent-team.png" alt="The agent team: its roles and a review report" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>AI agents draft, build, review and check for drift, under written roles. A person decides and commits.</figcaption></figure></li>
+            <li><figure class="stop"><button class="shot" type="button"><img src="img/how/01-6-agent-team.png" alt="The agent team: its roles and a review report" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>AI agents draft, build and check for drift, under written roles. A person reviews the work and commits.</figcaption></figure></li>
           </ol>
         </details>
         <figure class="stop">
@@ -142,9 +142,16 @@
             <li><figure class="stop"><button class="shot" type="button"><img src="img/how/03-5-version-pinned.png" alt="The deploy repo: the commit that pinned the new version" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>On success the build commits the new tag to the deploy repo, so Git always matches what is live.</figcaption></figure></li>
           </ol>
         </details>
-        <figure class="stop">
-          <button class="shot" type="button"><img src="img/tour/deploy-history.png" alt="The deploy repo: the pinned versions file and its history" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
-          <figcaption><b>What was live, and when.</b> The file that pins each environment's versions, and its history.</figcaption>
+        <!-- Real output, copied from the deploy repo (mrz-app-deploy) on 2026-11-16: the four latest
+             test deploys and the count of deploy(test) commits. Refresh both together. It replaced
+             the img/tour/deploy-history.png slot (owner, 2026-11-16). -->
+        <figure class="terminal">
+          <div class="term-screen">
+            <div class="terminal-bar"><span class="eyebrow-label">Deploy repo · git log</span></div>
+            <pre><code><span class="t-prompt">$</span> git log --date=format:%m-%d --format='%ad %s' --grep='^deploy(test)'
+<span class="term-line">11-03 deploy(test): tm-backoffice-frontend 25-f7ddea3</span><span class="term-line">11-03 deploy(test): tm-transport-ops-services 40-9a78cf0</span><span class="term-line">10-29 deploy(test): tm-backoffice-bff 39-466552c</span><span class="term-line">10-28 deploy(test): tm-backoffice-bff 36-4aef76f</span><span class="term-line t-muted">… 60 deploys to test since June 2026</span></code></pre>
+          </div>
+          <figcaption><b>What was live, and when.</b> One commit per deploy, naming the service and the build it pinned: build number and commit.</figcaption>
         </figure>
       </article>
 
@@ -243,10 +250,18 @@
             <li style="--hue: var(--s-entry)"><figure class="stop"><button class="shot" type="button"><img src="img/how/07-5-live-map.png" alt="The live map: every vehicle where it is now" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button><figcaption>The live map shows every vehicle where it is now; stale and lost positions come first.</figcaption></figure></li>
           </ol>
         </details>
-        <figure class="stop">
-          <button class="shot" type="button"><img src="img/tour/06-product.png" alt="The TM backoffice: routes drawn on a map in their own colours" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
-          <figcaption><b>The product.</b> What all of the above is for: the backoffice on real transit data. Taken from the mock build, where values no endpoint serves yet are tagged MOCK.</figcaption>
-        </figure>
+        <!-- Two pictures: the full-width card has the room (owner, 2026-11-16). The second reuses the
+             TM page's big screen, img/tm/live-map.png: one capture fills both. -->
+        <div class="pillar-shots">
+          <figure class="stop">
+            <button class="shot" type="button"><img src="img/tour/06-product.png" alt="The TM backoffice: routes drawn on a map in their own colours" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+            <figcaption><b>The product.</b> What all of the above is for: the backoffice on real transit data. Taken from the mock build, where values no endpoint serves yet are tagged MOCK.</figcaption>
+          </figure>
+          <figure class="stop">
+            <button class="shot" type="button"><img src="img/tm/live-map.png" alt="Live map: vehicles on their lines, one selected with its next stop" onerror="this.closest('figure').classList.add('is-empty'); this.closest('.shot').dataset.wait = this.alt; this.closest('.shot').disabled = true"></button>
+            <figcaption><b>Live.</b> Every vehicle where it is now, moved by the simulator; stale and lost positions surface first.</figcaption>
+          </figure>
+        </div>
       </article>
 
     </div>
@@ -296,20 +311,6 @@
       </div>
     </div>
 
-    <!-- From the deploy repo's history, 2026-11-04: the six latest test deploys, and the count of
-         deploy(test) commits. Refresh both together. -->
-    <figure class="terminal">
-      <div class="terminal-bar"><span class="eyebrow-label">Deploy repo · git log</span></div>
-      <pre><code><span class="t-prompt">$</span> git log --date=short --format='%ad  %s' --grep='^deploy(test)'
-2026-11-03  deploy(test): tm-backoffice-frontend 25-f7ddea3
-2026-11-03  deploy(test): tm-transport-ops-services 40-9a78cf0
-2026-10-29  deploy(test): tm-backoffice-bff 39-466552c
-2026-10-28  deploy(test): tm-backoffice-bff 36-4aef76f
-2026-10-28  deploy(test): tm-fleet-services 135-f529f89
-2026-10-28  deploy(test): tm-backoffice-frontend 21-e3273cc
-<span class="t-muted">… 60 deploys to test since June 2026</span></code></pre>
-      <figcaption>The deploy repo's history is the record of what ran: one commit per deploy, naming the service and the build it pinned — build number and commit.</figcaption>
-    </figure>
   </section>
 
   <!-- Principles -->
@@ -332,7 +333,7 @@
         <h3>Selection process</h3>
         <ol class="steps">
           <li>Name the problem it solves</li>
-          <li>Search the CNCF and CD Foundation landscapes</li>
+          <li>Find candidates: the CNCF and CD Foundation landscapes, or an article worth a try</li>
           <li>Follow the project's own deployment guide</li>
           <li>Check it against the criteria</li>
           <li>Compare alternatives</li>
@@ -368,7 +369,7 @@
     </p>
     <ul class="side-apps">
       <li><b>Immich</b><span>photo library</span></li>
-      <li><b>Dawarich</b><span>location history</span></li>
+      <li><b>Dawarich</b><span>location history, with Immich's photos on its map</span></li>
       <li><b>n8n</b><span>workflow automation</span></li>
       <li><b>Trilium</b><span>notes</span></li>
       <li><b>Homepage</b><span>dashboard of it all</span></li>
@@ -380,7 +381,7 @@
 <footer class="site-footer">
   <div class="wrap">
     <p>Began in 2018 as a TeamCity proof of concept. Picked up again in 2024 as a collection of <code>docker run</code> scripts; in February 2026 it moved onto a Linux mini PC, and the first version of the platform was finished in spring 2026. Sped up by AI assistance in 2026.</p>
-    <p class="muted">Built by Zoltan Kadar · <a href="https://github.com/pernix84/pernix84.github.io">Source on GitHub</a></p>
+    <p class="muted">Built by Zoltan Kadar, on 16 years of building software · <a href="https://github.com/pernix84/pernix84.github.io">Source on GitHub</a></p>
   </div>
 </footer>
 

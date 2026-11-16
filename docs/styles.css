@@ -444,3 +444,51 @@ h1 { text-transform: uppercase; letter-spacing: 0.02em; font-size: clamp(2rem, 4
    of each pattern's colour under its edge */
 .legend-center { justify-content: center; margin: 6px 0 0; }
 #patterns .pillar { background: linear-gradient(180deg, color-mix(in srgb, var(--hue) 8%, var(--surface-raised)) 0, var(--surface-raised) 96px); }
+
+/* TM page, "Where it is going": the future diagram is wider, and its planned parts are hatched in
+   their part's colour with a dotted outline; a planned line is dotted (events keep the long dash) */
+.diagram-wide svg { max-width: 980px; }
+.d-hatch { stroke-width: 2.5; opacity: 0.22; }
+.h-entry { stroke: var(--s-entry); }
+.h-domain { stroke: var(--s-domain); }
+.h-data { stroke: var(--s-data); }
+.d-plan { stroke-dasharray: 2 4; stroke-linecap: round; }
+.d-plan.d-entry { fill: url(#hatch-entry); }
+.d-plan.d-domain { fill: url(#hatch-domain); }
+.d-plan.d-data { fill: url(#hatch-data); }
+.d-planline { stroke-dasharray: 1 5; stroke-linecap: round; opacity: 0.8; }
+
+/* TM page, the product: one big screen across the width, two side screens under it */
+.product-shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.product-shots > .stop:first-child { grid-column: 1 / -1; }
+.product-shots > .stop:first-child .shot { aspect-ratio: 16 / 8; }
+@media (max-width: 640px) { .product-shots { grid-template-columns: 1fr; } }
+
+/* The deploy history as pillar 03's picture (owner, 2026-11-16): a terminal screen the size of a
+   picture frame, its caption like the other pictures', so the cards of a row still line up */
+.pillar > .terminal { margin: 0; padding-top: 8px; background: none; border: 0; border-radius: 0; overflow: visible; }
+.term-screen {
+  aspect-ratio: 16 / 10; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--surface-sunken); border: 1px solid var(--line-strong); border-radius: var(--radius-sign);
+}
+.term-screen pre { flex: 1; padding: 10px 12px; font-size: 0.62rem; line-height: 1.7; white-space: pre-wrap; overflow: hidden; }
+/* One deploy per line: a line too long for the card ends in an ellipsis instead of wrapping mid-hash */
+.term-line { display: block; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.pillar > .terminal figcaption { background: none; border: 0; padding: 8px 0 0; font-size: 0.875rem; color: var(--text-muted); }
+.pillar > .terminal figcaption b { color: var(--text-primary); font-weight: 600; }
+@media (min-width: 641px) { .pillar > .terminal figcaption { min-height: calc(3 * 1.6em + 8px); } }
+
+/* Pillar 07 has two pictures side by side: each takes its half of the card, at full picture size */
+.pillar-proof .pillar-shots .stop { max-width: none; }
+.pillar-proof .pillar-shots .stop figcaption { font-size: 0.875rem; }
+.pillar-proof .pillar-shots .stop.is-empty .shot::before { content: "Screenshot to come\A" attr(data-wait); }
+@media (max-width: 640px) { .pillar-shots { grid-template-columns: 1fr; } }
+
+/* Phones: a diagram keeps a readable size and scrolls sideways instead of shrinking to 390px */
+@media (max-width: 640px) {
+  .diagram { overflow-x: auto; }
+  .diagram svg { min-width: 560px; }
+  .diagram-wide svg { min-width: 760px; }
+  .d-tier { display: inline; }
+  .diagram figcaption, .diagram .legend { position: sticky; left: 0; max-width: calc(100vw - 66px); }
+}
