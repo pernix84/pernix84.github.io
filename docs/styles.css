@@ -119,6 +119,19 @@ h1, h2, h3 { font-family: var(--font-display); }
 h1 { font-weight: 800; font-size: clamp(2.2rem, 5.5vw, 3.8rem); line-height: 1.05; margin: 0 0 24px; letter-spacing: -0.025em; text-wrap: balance; }
 .lede { font-size: 1.125rem; color: var(--text-secondary); max-width: 680px; margin: 0 0 32px; }
 .lede strong { color: var(--text-primary); font-weight: 600; }
+.tm-cta {
+  display: block; max-width: 680px; margin: 0 0 32px; padding: 20px 24px; text-decoration: none;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-raised));
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: var(--radius-panel);
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.tm-cta:hover, .tm-cta:focus-visible { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--surface-raised)); }
+.tm-cta-title {
+  display: block; font-family: var(--font-display); font-weight: 800; color: var(--accent);
+  font-size: clamp(1.35rem, 3.2vw, 1.9rem); line-height: 1.15; letter-spacing: -0.015em;
+}
+.tm-cta:hover .tm-cta-title { color: var(--accent-hover); }
+.tm-cta-sub { display: block; margin-top: 8px; color: var(--text-secondary); font-size: 1rem; }
 .facts { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .facts li {
   background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
