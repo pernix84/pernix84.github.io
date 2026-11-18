@@ -241,7 +241,7 @@
       </article>
       <article class="pillar" style="--hue: var(--c-build)">
         <div class="pillar-head"><h3>Shared libraries, one way per mechanism</h3></div>
-        <p>Messaging, tracing and health reporting live once, in versioned NuGet packages every service consumes — no copy-paste between services.</p>
+        <p>Messaging and tracing live once, in versioned NuGet packages every service consumes; the outbox and the health metrics, still copied in each service today, are next to move there.</p>
       </article>
       <article class="pillar" style="--hue: var(--c-build)">
         <div class="pillar-head"><h3>A service template</h3></div>
@@ -285,7 +285,7 @@
           <li>Unit and integration tests in every service</li>
           <li>Architecture tests guard the layers</li>
           <li>Browser tests run the backoffice against fixtures and against the test environment</li>
-          <li>k6 load tests in the build pipeline</li>
+          <li>k6 load tests against the test environment, from TeamCity</li>
         </ol>
       </div>
       <div class="lane" style="--hue: var(--c-proof)">
