@@ -5,5 +5,13 @@
                 "img", "div", "center"
             ]
         }
-    }
+    },
+    // Stylesheets are formatted by Prettier on save, with the pinned version (package.json,
+    // `npm install` once) and .prettierrc.json (tm-hub docs/standards/frontend-css-formatting.md).
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "prettier.requireConfig": true,
+    "prettier.resolveGlobalModules": false
 }

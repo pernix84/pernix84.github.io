@@ -1,0 +1,12 @@
+{
+  "name": "pernix84-site",
+  "private": true,
+  "description": "Tooling only: the site itself has no build step (README).",
+  "scripts": {
+    "format": "prettier --write \"docs/**/*.css\"",
+    "format:check": "prettier --check \"docs/**/*.css\""
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}
