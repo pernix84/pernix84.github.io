@@ -210,18 +210,12 @@
   <section id="patterns" class="wrap section">
     <h2>Patterns in use</h2>
     <p class="section-lede">Each one is in the code today, not on a wish list. The colour says where it lives: one of TM's parts, as in the diagram, or the platform pillar that gives it.</p>
+    <h3 class="sub">Design choices</h3>
+    <p class="section-lede">Where TM takes its own line: the decisions a pattern catalogue leaves open.</p>
     <div class="pillars">
-      <article class="pillar" style="--hue: var(--s-data)">
-        <div class="pillar-head"><h3>Database per service</h3></div>
-        <p>Fleet and Transport operations each own a PostgreSQL database. Data crosses a boundary only through an API or an event.</p>
-      </article>
       <article class="pillar" style="--hue: var(--s-entry)">
         <div class="pillar-head"><h3>BFF without a database</h3></div>
-        <p>The backoffice gets one entry point that composes the domain services for its screens. It stores nothing, and every call it makes has a time budget.</p>
-      </article>
-      <article class="pillar" style="--hue: var(--s-domain)">
-        <div class="pillar-head"><h3>Transactional outbox</h3></div>
-        <p>An integration event is saved in the same transaction as the change that caused it, then published. No change without its event, no event without its change.</p>
+        <p>The backoffice gets one entry point that composes the domain services for its screens. It stores nothing, and every call it makes has a time budget, short retries and a circuit breaker, so a struggling service is not hammered.</p>
       </article>
       <article class="pillar" style="--hue: var(--s-domain)">
         <div class="pillar-head"><h3>Aggregates and domain events</h3></div>
@@ -229,11 +223,7 @@
       </article>
       <article class="pillar" style="--hue: var(--s-data)">
         <div class="pillar-head"><h3>Retries and dead letters</h3></div>
-        <p>Each consumer owns its durable on the publisher's stream. A message that fails every delivery is parked on a dead-letter subject, not dropped.</p>
-      </article>
-      <article class="pillar" style="--hue: var(--c-observe)">
-        <div class="pillar-head"><h3>One trace across the bus</h3></div>
-        <p>W3C trace context travels on the message headers, so a request and the events it causes show up as one trace.</p>
+        <p>Each consumer owns its durable on the publisher's stream. A message that fails every delivery is parked on a dead-letter subject, not dropped. The broker drops a repeated publish, and consumers are written so a repeated or late event changes nothing.</p>
       </article>
       <article class="pillar" style="--hue: var(--c-plan)">
         <div class="pillar-head"><h3>Contracts first, clients generated</h3></div>
@@ -243,8 +233,40 @@
         <div class="pillar-head"><h3>Shared libraries, one way per mechanism</h3></div>
         <p>Messaging and tracing live once, in versioned NuGet packages every service consumes; the outbox and the health metrics, still copied in each service today, are next to move there.</p>
       </article>
+    </div>
+    <h3 class="sub">From the microservices catalogue</h3>
+    <p class="section-lede">The well-known patterns TM uses, named as on <a href="https://microservices.io/patterns/">microservices.io</a>.</p>
+    <div class="pillars">
+      <article class="pillar" style="--hue: var(--s-data)">
+        <div class="pillar-head"><h3>Database per service</h3></div>
+        <p>Fleet and Transport operations each own a PostgreSQL database. Data crosses a boundary only through an API or an event.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--s-domain)">
+        <div class="pillar-head"><h3>Transactional outbox</h3></div>
+        <p>An integration event is saved in the same transaction as the change that caused it, then published. No change without its event, no event without its change.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--c-secure)">
+        <div class="pillar-head"><h3>Access token</h3></div>
+        <p>The backoffice signs in with Keycloak, and every request carries its access token. The BFF checks it, expiry included, before it calls a domain service.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--c-observe)">
+        <div class="pillar-head"><h3>Distributed tracing</h3></div>
+        <p>W3C trace context travels on the message headers, so a request and the events it causes show up as one trace.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--c-observe)">
+        <div class="pillar-head"><h3>Log aggregation and application metrics</h3></div>
+        <p>Every service sends structured logs to Seq and exposes Prometheus metrics, its health among them, that Grafana charts. Nobody logs in to a server to find out what happened.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--c-deploy)">
+        <div class="pillar-head"><h3>Externalized configuration</h3></div>
+        <p>No environment is baked into an image. Addresses, connection strings and secrets arrive as environment variables at deploy, the secrets from Infisical.</p>
+      </article>
+      <article class="pillar" style="--hue: var(--c-deploy)">
+        <div class="pillar-head"><h3>Server-side discovery</h3></div>
+        <p>Each service runs in its own container. Callers use one address per service, and Traefik routes it to the containers that announce themselves through their Docker labels.</p>
+      </article>
       <article class="pillar" style="--hue: var(--c-build)">
-        <div class="pillar-head"><h3>A service template</h3></div>
+        <div class="pillar-head"><h3>Service template</h3></div>
         <p>New services start from a template with the layers, health reporting and telemetry already in place, so every service looks and runs the same way.</p>
       </article>
     </div>
